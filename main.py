@@ -1,7 +1,13 @@
 from fastapi import FastAPI
-from routers import auth, recommendations
+from database import database, create_tables
 
 app = FastAPI()
 
-app.include_router(auth.router)
-app.include_router(recommendations.router)
+@app.on_event("startup")
+async def startup():
+    create_tables()
+    await database.connect()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
