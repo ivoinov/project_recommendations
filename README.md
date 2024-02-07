@@ -118,9 +118,13 @@ The `--reload` flag is recommended for development as it enables hot reloading.
 
 Access the API documentation by navigating to `http://127.0.0.1:8000/docs` in your web browser.
 
+
 ## API Endpoints
 
-- **Token**: `POST /token` - Authenticate users and return an access token.
-- **Upselling Recommendations**: `GET /upselling-recommendations/{product_id}` - Retrieve upselling product recommendations based on the provided product ID.
+The application provides the following endpoints:
+
+- `/signup`: Register a new user.
+- `/login`: Authenticate and receive an access token.
+- `/recommendations/`: Get product recommendations (requires authentication).
 
 ---
