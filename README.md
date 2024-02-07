@@ -18,6 +18,7 @@ fastapi_recommendation_app/
 │
 └── data_processing/        # Scripts for data processing and machine learning model training.
     └── train_model.py      # Script for training the recommendation model.
+├── requirements.txt        # List of project dependencies for easy replication.
 ```
 
 ## Installation
@@ -29,49 +30,97 @@ python -m venv venv
 source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
 ```
 
-Install the required libraries and packages:
+### Using `requirements.txt`
+
+To install the required libraries and packages, use the `requirements.txt` file:
 
 ```bash
-pip install fastapi uvicorn databases[postgresql] sqlalchemy sklearn numpy joblib
+pip install -r requirements.txt
 ```
 
-### Key Dependencies
+This file contains a list of all necessary Python packages. If you want to replicate the environment on a different machine or deploy it to a server, this command will ensure that the exact versions of the packages used in development are installed.
 
-- **FastAPI**: Modern, fast web framework for building APIs with Python.
-- **Uvicorn**: ASGI server for running FastAPI.
-- **Databases**: Provides async database support.
-- **SQLAlchemy**: SQL toolkit and ORM for Python.
-- **Scikit-learn**: Machine learning library for Python, used for model training and similarity calculations.
-- **NumPy**: Fundamental package for scientific computing in Python.
-- **Joblib**: Efficient tools for saving and loading Python objects.
+### Creating and Updating `requirements.txt`
+
+The `requirements.txt` file was generated using `pip freeze` and should be updated whenever new packages are installed or existing packages are upgraded:
+
+```bash
+pip freeze > requirements.txt
+```
+
+Remember to regenerate and commit the updated `requirements.txt` file to your version control system whenever you make changes to the project dependencies.
+
+### Database Setup
+
+#### PostgreSQL on macOS (using Homebrew)
+
+- Install Homebrew if you haven't already:
+
+  ```bash
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  ```
+
+- Install PostgreSQL:
+
+  ```bash
+  brew install postgresql
+  ```
+
+- Start the PostgreSQL service:
+
+  ```bash
+  brew services start postgresql
+  ```
+
+- Connect to the default PostgreSQL database with:
+
+  ```bash
+  psql postgres
+  ```
+
+#### PostgreSQL on Ubuntu
+
+- Update the package list:
+
+  ```bash
+  sudo apt update
+  ```
+
+- Install PostgreSQL:
+
+  ```bash
+  sudo apt install postgresql postgresql-contrib
+  ```
+
+- Start and enable the PostgreSQL service:
+
+  ```bash
+  sudo systemctl start postgresql
+  sudo systemctl enable postgresql
+  ```
+
+- Connect to PostgreSQL with the `postgres` user:
+
+  ```bash
+  sudo -i -u postgres
+  psql
+  ```
 
 ## Running the Application
 
-1. **Database Setup**: Ensure your PostgreSQL database is configured according to `database.py`. Create necessary tables and populate them with initial data.
+To start the FastAPI server:
 
-2. **Model Training**: Navigate to the `data_processing` directory and run the `train_model.py` script to train your machine learning model and generate the product similarity matrix.
+```bash
+uvicorn main:app --reload
+```
 
-    ```bash
-    python data_processing/train_model.py
-    ```
+The `--reload` flag is recommended for development as it enables hot reloading.
 
-3. **Start the FastAPI Application**: Run the following command from the root directory of the project:
-
-    ```bash
-    uvicorn main:app --reload
-    ```
-
-    The `--reload` flag enables hot reloading during development.
+Access the API documentation by navigating to `http://127.0.0.1:8000/docs` in your web browser.
 
 ## API Endpoints
 
 - **Token**: `POST /token` - Authenticate users and return an access token.
 - **Upselling Recommendations**: `GET /upselling-recommendations/{product_id}` - Retrieve upselling product recommendations based on the provided product ID.
-- Additional endpoints and functionality can be added by expanding the routers in the `routers` directory.
-
-## Notes
-
-- Ensure to replace mock data and placeholders with actual implementation details specific to your project.
-- Regularly update your machine learning models with new data to maintain the relevance of recommendations.
 
 ---
