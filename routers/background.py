@@ -2,7 +2,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 def background_task(job_name: str):
