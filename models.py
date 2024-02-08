@@ -12,6 +12,8 @@ class UserInDB(UserBase):
 
 class UserCreate(UserBase):
     password: str
+    full_name: str = Field(..., example="John Doe")
+    username: str = Field(..., example="johndoe")
 
 class User(UserBase):
     id: int

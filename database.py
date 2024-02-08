@@ -16,9 +16,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def create_user(user: UserCreate):
     hashed_password = get_password_hash(user.password)
-    query = users.insert().values(email=user.email, hashed_password=hashed_password)
+    query = users.insert().values(email=user.email, hashed_password=hashed_password, full_name=user.full_name, username=user.username, disabled=False)
     last_record_id = await database.execute(query)
-    return {**user.dict(), "id": last_record_id, "hashed_password": hashed_password}
+    return {**user.model_dump(), "id": last_record_id, "hashed_password": hashed_password}
 
 async def get_user_by_email(email: str):
     query = select([users]).where(users.c.email == email)
