@@ -118,7 +118,6 @@ The `--reload` flag is recommended for development as it enables hot reloading.
 
 Access the API documentation by navigating to `http://127.0.0.1:8000/docs` in your web browser.
 
-
 ## API Endpoints
 
 The application provides the following endpoints:
@@ -128,3 +127,44 @@ The application provides the following endpoints:
 - `/recommendations/`: Get product recommendations (requires authentication).
 
 ---
+
+### New Features and API Endpoints
+
+#### Asynchronous Data Processing: `execute-background-task`
+- **Endpoint**: `/execute-background-task`
+- **Method**: POST
+- **Description**: This endpoint allows for the execution of asynchronous background jobs for data processing. Users can initiate a job by providing a `job_name`, which will be processed in the background, allowing the API to respond immediately without waiting for the job to complete.
+- **Usage**:
+  ```bash
+  curl -X 'POST' \
+    'http://127.0.0.1:8000/execute-background-task' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"job_name": "data_cleanup"}'
+  ```
+
+#### Upselling Recommendations
+- **Endpoint**: `/upselling-recommendations/{product_id}`
+- **Method**: GET
+- **Description**: Fetch upselling product recommendations based on the purchase history of items related to the specified `product_id`. This feature enhances the customer's shopping experience by suggesting additional products that complement their current selection.
+- **
+
+Usage**:
+  ```bash
+  curl -X 'GET' \
+    'http://127.0.0.1:8000/upselling-recommendations/12345' \
+    -H 'accept: application/json'
+  ```
+
+#### Enhanced Authentication: `login`
+- **Endpoint**: `/login`
+- **Method**: POST
+- **Description**: Authenticate users and receive a bearer token for accessing protected routes. The token should be included in the Authorization header of subsequent requests to endpoints requiring authentication.
+- **Usage**:
+  ```bash
+  curl -X 'POST' \
+    'http://127.0.0.1:8000/login' \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"username": "user", "password": "pass"}'
+  ```
