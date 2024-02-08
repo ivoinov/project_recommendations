@@ -8,8 +8,9 @@ load_dotenv()
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 Base = declarative_base()
 
+
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, index=True)
     hashed_password = Column(String(100))
@@ -18,13 +19,18 @@ class User(Base):
     disabled = Column(Boolean, default=False)
     tokens = relationship("Token", back_populates="user")
 
+
 class Token(Base):
-    __tablename__ = 'tokens'
+    __tablename__ = "tokens"
     id = Column(Integer, primary_key=True)
     token = Column(String(254), unique=True, index=True)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="tokens")
-    expires_at = Column(DateTime, default=datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expires_at = Column(
+        DateTime,
+        default=datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+
 
 class Product(Base):
     __tablename__ = "products"
@@ -35,11 +41,13 @@ class Product(Base):
     price = Column(Integer)
     category = Column(String(100))
 
+
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     sku = Column(String(255), index=True)
     quantity = Column(Integer)
+
 
 class ProductRecommendation:
     def __init__(self, product_id, recommendations):

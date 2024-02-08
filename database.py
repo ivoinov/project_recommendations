@@ -18,11 +18,15 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 engine = create_engine(DATABASE_URL)
 
 # Create a scoped session factory
-SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+SessionLocal = scoped_session(
+    sessionmaker(autocommit=False, autoflush=False, bind=engine)
+)
+
 
 # Function to create tables, useful during application initialization
 def create_tables():
     Base.metadata.create_all(bind=engine)
+
 
 # Utility function to get the database session
 def get_db():
@@ -32,18 +36,27 @@ def get_db():
     finally:
         db.close()
 
+
 # Functions related to password hashing and verification
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
+
 
 # User related functions
 async def create_user(db_session, user):
     try:
         hashed_password = get_password_hash(user.password)
-        db_user = User(email=user.email, hashed_password=hashed_password, full_name=user.full_name, username=user.username, disabled=False)
+        db_user = User(
+            email=user.email,
+            hashed_password=hashed_password,
+            full_name=user.full_name,
+            username=user.username,
+            disabled=False,
+        )
         db_session.add(db_user)
         db_session.commit()
         db_session.refresh(db_user)
@@ -54,10 +67,12 @@ async def create_user(db_session, user):
     finally:
         db_session.close()
 
+
 async def get_user_by_email(db_session, email):
     return db_session.query(User).filter(User.email == email).first()
 
-async def create_user_token(db_session, user_id, token, expires_at = None):
+
+async def create_user_token(db_session, user_id, token, expires_at=None):
     try:
         db_token = Token(token=token, user_id=user_id)
         if expires_at:
@@ -72,7 +87,8 @@ async def create_user_token(db_session, user_id, token, expires_at = None):
     finally:
         db_session.close()
 
-async def update_user_token(db_session, user_id, token, expires_at = None):
+
+async def update_user_token(db_session, user_id, token, expires_at=None):
     try:
         db_token = db_session.query(Token).filter(Token.user_id == user_id).first()
         db_token.token = token
@@ -86,6 +102,7 @@ async def update_user_token(db_session, user_id, token, expires_at = None):
         raise
     finally:
         db_session.close()
+
 
 async def get_token_by_user_id(db_session, user_id):
     return db_session.query(Token).filter(Token.user_id == user_id).first()

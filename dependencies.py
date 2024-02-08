@@ -17,7 +17,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-async def create_access_token(db_session, data: dict, expires_delta: Optional[timedelta] = None):
+
+async def create_access_token(
+    db_session, data: dict, expires_delta: Optional[timedelta] = None
+):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -25,10 +28,15 @@ async def create_access_token(db_session, data: dict, expires_delta: Optional[ti
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    create_user_token(db_session, token=encoded_jwt, user_id=data['user_id'], expires_at=expire)
+    create_user_token(
+        db_session, token=encoded_jwt, user_id=data["user_id"], expires_at=expire
+    )
     return encoded_jwt
 
-async def update_access_token(db_session, data: dict, expires_delta: Optional[timedelta] = None):
+
+async def update_access_token(
+    db_session, data: dict, expires_delta: Optional[timedelta] = None
+):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -36,8 +44,11 @@ async def update_access_token(db_session, data: dict, expires_delta: Optional[ti
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    await update_user_token(db_session, token=encoded_jwt, user_id=data['user_id'], expires_at=expire)
+    await update_user_token(
+        db_session, token=encoded_jwt, user_id=data["user_id"], expires_at=expire
+    )
     return encoded_jwt
+
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -57,6 +68,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return User(**user)
+
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     if not current_user.is_active:

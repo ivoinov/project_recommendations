@@ -72,3 +72,5 @@ dist/
 .pytproject
 .idea/
 .vscode/
+
+recenv/*

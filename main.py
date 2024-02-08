@@ -24,6 +24,7 @@ app.add_middleware(
 # Create all tables in the database
 Base.metadata.create_all(bind=engine)
 
+
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -31,6 +32,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
 
 # Include routers from the routers directory
 app.include_router(auth.router)
