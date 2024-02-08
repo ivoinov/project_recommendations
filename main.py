@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, recommendations
+from routers import auth, recommendations, background
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine, Base
 from models import User, Token, Product, Order
@@ -35,3 +35,4 @@ def get_db():
 # Include routers from the routers directory
 app.include_router(auth.router)
 app.include_router(recommendations.router)
+app.include_router(background.router)
