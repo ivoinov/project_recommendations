@@ -28,7 +28,7 @@ async def create_access_token(
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    create_user_token(
+    await create_user_token(
         db_session, token=encoded_jwt, user_id=data["user_id"], expires_at=expire
     )
     return encoded_jwt
