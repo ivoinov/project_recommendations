@@ -8,18 +8,31 @@ This project is a recommendation system built with FastAPI, focusing on providin
 fastapi_recommendation_app/
 │
 ├── main.py                 # Entry point for the FastAPI application.
-├── models.py               # Pydantic models for request and response validation.
+├── models.py               # Contains declarative schema models for the database.
 ├── database.py             # Database connection and utility functions.
 ├── dependencies.py         # Dependency-related functions, such as user authentication.
 │
 ├── routers/                # API routers, organizing endpoints into logical groups.
 │   ├── auth.py             # Authentication-related endpoints.
-│   └── recommendations.py  # Endpoints for product recommendations.
+│   ├── recommendations.py  # Endpoints for product recommendations.
+│   ├── background.py       # Endpoints for background job processing.
+│   └── schemas.py          # Models required for routing and request/response processing.
 │
 └── data_processing/        # Scripts for data processing and machine learning model training.
     └── train_model.py      # Script for training the recommendation model.
 ├── requirements.txt        # List of project dependencies for easy replication.
 ```
+
+### New File: `routers/background.py`
+This file introduces endpoints for managing background tasks, allowing for asynchronous execution of long-running operations without blocking the API's main thread. This is crucial for tasks such as data processing or batch updates that require significant processing time.
+
+### Clarification on `models.py` and `routers/schemas.py`
+- `models.py`: This file contains declarative schema models that define the structure of the database tables and their relationships. These models are essential for interacting with the database using SQLAlchemy.
+- `routers/schemas.py`: This file contains Pydantic models that are used for request validation and response serialization. These schemas define the expected structure of request data and the format of responses sent back to the client, ensuring consistent and predictable API behavior.
+
+### Enhanced Functionality
+The addition of the `background.py` router and the `schemas.py` file within the `routers/` directory enhances the application's functionality and organization. The `background.py` router enables the application to handle tasks that are best run in the background, improving the overall performance and responsiveness of the API. The `schemas.py` file provides a centralized location for defining request and response models, streamlining the development and maintenance of the API's endpoints.
+
 
 ## Installation
 
