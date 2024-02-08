@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import auth, recommendations
-from database import create_tables, database
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine, Base
+from models import User, Token, Product, Order
 
 app = FastAPI()
+
 # CORS middleware configuration
 origins = [
     "http://localhost",
@@ -17,15 +20,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Event handlers to manage database connection lifecycle
-@app.on_event("startup")
-async def startup():
-    create_tables()
-    await database.connect()
 
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
+# Create all tables in the database
+Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # Include routers from the routers directory
 app.include_router(auth.router)
