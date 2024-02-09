@@ -1,14 +1,9 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from dotenv import load_dotenv
 from passlib.context import CryptContext
-from app.models import User, Token, Base
-
-# Load environment variables from .env file
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+from app.models import User, Token, Base, Product
+from config import logger, DATABASE_URL
 
 # Password context for hashing and verifying passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -105,3 +100,40 @@ async def update_user_token(db_session, user_id, token, expires_at=None):
 
 async def get_token_by_user_id(db_session, user_id):
     return db_session.query(Token).filter(Token.user_id == user_id).first()
+
+
+## Product related functions
+def create_or_update_product(product):
+    try:
+        db_session = SessionLocal()
+        db_product = (
+            db_session.query(Product).filter(Product.sku == product.sku).first()
+        )
+        if db_product is None:
+            # Product does not exist, create a new one
+            db_product = Product(
+                sku=product.sku,
+                name=product.name,
+                description=product.description,
+                price=product.price,
+                categories_names=product.categories_names,
+                current_price=product.current_price,
+            )
+        else:
+            # Product exists, update its values
+            db_product.name = product.name
+            db_product.description = product.description
+            db_product.price = product.price
+            db_product.categories_names = product.categories_names
+            db_product.current_price = product.current_price
+
+        db_session.add(db_product)
+        db_session.commit()
+        db_session.refresh(db_product)
+        return db_product
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Error creating or updating product: {e}")
+        raise
+    finally:
+        db_session.close()

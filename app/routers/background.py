@@ -12,5 +12,6 @@ async def execute_background_task(
     background_tasks: BackgroundTasks,
     token: str = Depends(oauth2_scheme),
 ):
-    background_tasks.add_task(process_task.delay, 123)
+    # Enqueue the background task
+    background_tasks.add_task(process_task.delay, {"job_name": job_name})
     return {"message": "Background task enqueued"}
