@@ -55,7 +55,14 @@ def test_create_and_query_product(db: Session):
 
 
 def test_create_and_query_order(db: Session):
-    order = Order(id=1,sku="test_sku", quantity=10, product_name="test_product", total_price=1000, item_price=100)
+    order = Order(
+        id=1,
+        sku="test_sku",
+        quantity=10,
+        product_name="test_product",
+        total_price=1000,
+        item_price=100,
+    )
     db.add(order)
     db.commit()
     order_from_db = db.query(Order).filter(Order.sku == "test_sku").first()

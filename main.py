@@ -5,6 +5,7 @@ from app.database import SessionLocal, create_tables
 
 app = FastAPI()
 
+
 # CORS middleware configuration
 origins = [
     "http://localhost",
