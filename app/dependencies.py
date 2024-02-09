@@ -3,10 +3,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
-from database import get_user_by_email, create_user_token, update_user_token
+from app.database import get_user_by_email, create_user_token, update_user_token
 import os
 from dotenv import load_dotenv
-from models import Token, User
+from app.models import Token, User
 
 # to get a string like this run:
 # openssl rand -hex 32

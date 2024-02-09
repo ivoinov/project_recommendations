@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from models import Base, User, Token, Product, Order, ProductRecommendation
+from app.models import Base, User, Token, Product, Order, ProductRecommendation
 
 engine = create_engine("sqlite:///:memory:")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -40,10 +40,13 @@ def test_create_and_query_token(db: Session):
 
 def test_create_and_query_product(db: Session):
     product = Product(
+        id=1,
+        sku="test_sku",
         name="test_product",
         description="test_description",
         price=100,
-        category="test_category",
+        categories_names="test_category",
+        current_price=100,
     )
     db.add(product)
     db.commit()
@@ -52,7 +55,7 @@ def test_create_and_query_product(db: Session):
 
 
 def test_create_and_query_order(db: Session):
-    order = Order(sku="test_sku", quantity=10)
+    order = Order(id=1,sku="test_sku", quantity=10, product_name="test_product", total_price=1000, item_price=100)
     db.add(order)
     db.commit()
     order_from_db = db.query(Order).filter(Order.sku == "test_sku").first()

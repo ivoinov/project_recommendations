@@ -1,10 +1,10 @@
 from .schemas import ProductRecommendationResponse
-from models import ProductRecommendation, Token
+from app.models import ProductRecommendation, Token
 import joblib
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from database import get_db
+from app.database import get_db
 from datetime import datetime
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")

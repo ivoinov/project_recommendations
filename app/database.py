@@ -1,10 +1,9 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from models import Base  # Importing Base from models.py to use the declarative base
-import os
 from dotenv import load_dotenv
 from passlib.context import CryptContext
-from models import User, Token
+from app.models import User, Token, Base
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,7 +24,7 @@ SessionLocal = scoped_session(
 
 # Function to create tables, useful during application initialization
 def create_tables():
-    Base.metadata.create_all(bind=engine)        
+    Base.metadata.create_all(bind=engine)
 
 
 # Utility function to get the database session

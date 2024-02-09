@@ -2,14 +2,14 @@ from fastapi import APIRouter, Body, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
-from database import (
+from app.database import (
     create_user,
     get_user_by_email,
     get_db,
     verify_password,
     get_token_by_user_id,
 )
-from dependencies import create_access_token, update_access_token
+from app.dependencies import create_access_token, update_access_token
 import os
 from dotenv import load_dotenv
 from .schemas import UserSignUp, TokenResponse

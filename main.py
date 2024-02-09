@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, recommendations, background
-from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Base, create_tables
-from models import User, Token, Product, Order
+from app.routers import auth, recommendations, background
+from app.database import SessionLocal, create_tables
 
 app = FastAPI()
 
