@@ -25,7 +25,7 @@ SessionLocal = scoped_session(
 
 # Function to create tables, useful during application initialization
 def create_tables():
-    Base.metadata.create_all(bind=engine)
+    Base.metadata.create_all(bind=engine)        
 
 
 # Utility function to get the database session

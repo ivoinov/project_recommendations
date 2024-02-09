@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import auth, recommendations, background
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine, Base
+from database import SessionLocal, engine, Base, create_tables
 from models import User, Token, Product, Order
 
 app = FastAPI()
@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 # Create all tables in the database
-Base.metadata.create_all(bind=engine)
+create_tables()
 
 
 # Dependency

@@ -36,10 +36,12 @@ class Product(Base):
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), index=True)
+    sku = Column(String(255), index=True)
+    name = Column(String(255), index=True)
     description = Column(String(1000))
     price = Column(Integer)
-    category = Column(String(100))
+    categories_names = Column(String(255))
+    current_price = Column(Integer)
 
 
 class Order(Base):
@@ -47,6 +49,9 @@ class Order(Base):
     id = Column(Integer, primary_key=True, index=True)
     sku = Column(String(255), index=True)
     quantity = Column(Integer)
+    product_name = Column(String(254), index=False, nullable=False)
+    total_price = Column(Integer)
+    item_price = Column(Integer)
 
 
 class ProductRecommendation:

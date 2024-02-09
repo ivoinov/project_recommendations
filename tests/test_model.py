@@ -3,10 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from models import Base, User, Token, Product, Order, ProductRecommendation
 
-engine = create_engine('sqlite:///:memory:')
+engine = create_engine("sqlite:///:memory:")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
+
 
 def get_db():
     db = SessionLocal()
@@ -15,37 +16,48 @@ def get_db():
     finally:
         db.close()
 
+
 @pytest.fixture
 def db():
     return next(get_db())
 
+
 def test_create_and_query_user(db: Session):
-    user = User(username='test', hashed_password='test', email='test@test.com')
+    user = User(username="test", hashed_password="test", email="test@test.com")
     db.add(user)
     db.commit()
-    user_from_db = db.query(User).filter(User.username == 'test').first()
-    assert user_from_db.username == 'test'
+    user_from_db = db.query(User).filter(User.username == "test").first()
+    assert user_from_db.username == "test"
+
 
 def test_create_and_query_token(db: Session):
-    token = Token(token='test_token', user_id=1)
+    token = Token(token="test_token", user_id=1)
     db.add(token)
     db.commit()
-    token_from_db = db.query(Token).filter(Token.token == 'test_token').first()
-    assert token_from_db.token == 'test_token'
+    token_from_db = db.query(Token).filter(Token.token == "test_token").first()
+    assert token_from_db.token == "test_token"
+
 
 def test_create_and_query_product(db: Session):
-    product = Product(name='test_product', description='test_description', price=100, category='test_category')
+    product = Product(
+        name="test_product",
+        description="test_description",
+        price=100,
+        category="test_category",
+    )
     db.add(product)
     db.commit()
-    product_from_db = db.query(Product).filter(Product.name == 'test_product').first()
-    assert product_from_db.name == 'test_product'
+    product_from_db = db.query(Product).filter(Product.name == "test_product").first()
+    assert product_from_db.name == "test_product"
+
 
 def test_create_and_query_order(db: Session):
-    order = Order(sku='test_sku', quantity=10)
+    order = Order(sku="test_sku", quantity=10)
     db.add(order)
     db.commit()
-    order_from_db = db.query(Order).filter(Order.sku == 'test_sku').first()
-    assert order_from_db.sku == 'test_sku'
+    order_from_db = db.query(Order).filter(Order.sku == "test_sku").first()
+    assert order_from_db.sku == "test_sku"
+
 
 def test_product_recommendation():
     product_recommendation = ProductRecommendation(product_id=1, recommendations=[2, 3])
