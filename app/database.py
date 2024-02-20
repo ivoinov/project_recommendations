@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from passlib.context import CryptContext
-from app.models import User, Token, Base, Product
+from app.models import User, Token, Base, Product, Order
 from config import logger, DATABASE_URL
 
 # Password context for hashing and verifying passwords
@@ -134,6 +134,44 @@ def create_or_update_product(product):
     except Exception as e:
         db_session.rollback()
         logger.error(f"Error creating or updating product: {e}")
+        raise
+    finally:
+        db_session.close()
+
+
+# Order related functions
+def create_or_update_order(order):
+    try:
+        db_session = SessionLocal()
+        db_order = (
+            db_session.query(Order)
+            .filter(Order.increment_id ==str(order.increment_id) , Order.sku == str(order.sku))
+            .first()
+        )
+        if db_order is None:
+            # Order does not exist, create a new one
+            db_order = Order(
+                increment_id=order.increment_id,
+                customer_id=order.customer_id,
+                sku=order.sku,
+                quantity=order.quantity,
+                product_name=order.product_name,
+                total_price=order.total_price,
+                item_price=order.item_price,
+            )
+        else:
+            # Order exists, update its values
+            db_order.quantity = order.quantity
+            db_order.total_price = order.total_price
+            db_order.item_price = order.item_price
+
+        db_session.add(db_order)
+        db_session.commit()
+        db_session.refresh(db_order)
+        return db_order
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Error creating or updating order: {e}")
         raise
     finally:
         db_session.close()

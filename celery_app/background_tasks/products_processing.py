@@ -4,7 +4,7 @@ from app.models import Product
 from app.database import create_or_update_product
 
 
-def process_csv_file():
+def process_products_csv_file():
     file_path = os.path.join(project_root, "var", "df_total.csv")
     tasks = []
     with open(file_path, "r") as csv_file:

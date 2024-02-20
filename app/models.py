@@ -47,6 +47,8 @@ class Product(Base):
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
+    increment_id = Column(String(255), index=True)
+    customer_id = Column(Integer)
     sku = Column(String(255), index=True)
     quantity = Column(Integer)
     product_name = Column(String(254), index=False, nullable=False)
