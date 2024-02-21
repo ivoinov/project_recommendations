@@ -175,3 +175,19 @@ def create_or_update_order(order):
         raise
     finally:
         db_session.close()
+
+def get_orders():
+    db_session = SessionLocal()
+    orders = db_session.query(Order).all()
+    db_session.close()
+    return orders
+def get_unique_customer_ids():
+    db_session = SessionLocal()
+    customer_ids = db_session.query(Order.customer_id).distinct().all()
+    db_session.close()
+    return customer_ids
+def get_unique_product_skus():
+    db_session = SessionLocal()
+    skus = db_session.query(Order.sku).distinct().all()
+    db_session.close()
+    return skus
