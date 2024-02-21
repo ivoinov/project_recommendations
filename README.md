@@ -121,7 +121,7 @@ Remember to regenerate and commit the updated `requirements.txt` file to your ve
 
 ## Running the Application
 
-To start the FastAPI server:
+### To start the FastAPI server
 
 ```bash
 uvicorn main:app --reload
@@ -130,6 +130,17 @@ uvicorn main:app --reload
 The `--reload` flag is recommended for development as it enables hot reloading.
 
 Access the API documentation by navigating to `http://127.0.0.1:8000/docs` in your web browser.
+
+### RUN Celery APP
+Celery is used in this project as a distributed task queue to manage background jobs without blocking the main application's execution. This is crucial for executing tasks that are resource-intensive or time-consuming, such as data processing or model training, ensuring the application remains responsive to user requests.
+
+To run the Celery worker, use the following command:
+bash
+```bash
+celery -A celery_app.worker worker --loglevel=info
+```
+
+This command starts a Celery worker that listens for tasks defined in the celery_app module.
 
 ## API Endpoints
 
@@ -181,3 +192,12 @@ Usage**:
     -H 'Content-Type: application/json' \
     -d '{"username": "user", "password": "pass"}'
   ```
+
+## Background Tasks
+The application includes three critical background tasks for data processing and model training:
+
+ - orders_processing: This task is responsible for importing order information from a CSV file into the database. It is essential for keeping the orders data up-to-date and allows for accurate order management and analysis.
+
+ - products_processing: Similar to orders_processing, this task imports product information from a CSV file into the database. It ensures that the product catalog is current, which is vital for inventory management and recommendation accuracy.
+
+ - train_upsell_model: This task uses the LightFM library to train a model for upselling recommendations. By analyzing existing order and product data, the model identifies patterns and relationships that can be used to suggest additional products to customers, enhancing the shopping experience and potentially increasing sales.
