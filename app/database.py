@@ -145,7 +145,10 @@ def create_or_update_order(order):
         db_session = SessionLocal()
         db_order = (
             db_session.query(Order)
-            .filter(Order.increment_id ==str(order.increment_id) , Order.sku == str(order.sku))
+            .filter(
+                Order.increment_id == str(order.increment_id),
+                Order.sku == str(order.sku),
+            )
             .first()
         )
         if db_order is None:
@@ -176,16 +179,21 @@ def create_or_update_order(order):
     finally:
         db_session.close()
 
+
 def get_orders():
     db_session = SessionLocal()
     orders = db_session.query(Order).all()
     db_session.close()
     return orders
+
+
 def get_unique_customer_ids():
     db_session = SessionLocal()
     customer_ids = db_session.query(Order.customer_id).distinct().all()
     db_session.close()
     return customer_ids
+
+
 def get_unique_product_skus():
     db_session = SessionLocal()
     skus = db_session.query(Order.sku).distinct().all()

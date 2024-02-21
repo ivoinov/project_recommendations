@@ -3,6 +3,7 @@ from .background_tasks.products_processing import process_products_csv_file
 from .background_tasks.orders_processing import process_orders_csv_file
 from .background_tasks.train_upsell_model import train_upsell_model
 
+
 # Define a task
 @celery.task(bind=True, max_retries=5, default_retry_delay=300)
 def process_task(self, data):
