@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timedelta
 import os
@@ -38,7 +38,8 @@ class Product(Base):
     id = Column(Integer, primary_key=True, index=True)
     sku = Column(String(255), index=True)
     name = Column(String(255), index=True)
-    description = Column(String(1000))
+    short_description = Column(Text)
+    description = Column(Text)
     price = Column(Integer)
     categories_names = Column(String(255))
     current_price = Column(Integer)
