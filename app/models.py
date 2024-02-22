@@ -42,6 +42,7 @@ class Product(Base):
     description = Column(Text)
     price = Column(Integer)
     categories_names = Column(String(255))
+    parent_category = Column(Integer)
     current_price = Column(Integer)
 
 
