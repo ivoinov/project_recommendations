@@ -18,7 +18,7 @@ def process_products_csv_file():
             price = float(row.get("price", 0))
             categories_names = row.get("categories_names", "")
             current_price = float(row.get("current_price", 0))
-            parent_category = int(row.get("parent_category", ""))
+            parent_category = int(row.get("parent_category", 0))
             # Create a new Product instance
             product = Product(
                 sku=sku,
