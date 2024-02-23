@@ -41,7 +41,9 @@ class TokenResponse(BaseModel):
 
 
 class ProductRecommendationResponse(BaseModel):
-    product_id: int = Field(..., description="Product ID of the product", examples=[1])
-    recommendations: list[int] = Field(
-        ..., description="List of recommended product IDs", examples=[[1, 2, 3]]
+    product_sku: str = Field(
+        ..., description="Product SKU of the product", examples=[1]
+    )
+    recommendations: list[str] = Field(
+        ..., description="List of recommended product SKUs", examples=[[1, 2, 3]]
     )

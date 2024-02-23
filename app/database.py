@@ -144,13 +144,30 @@ def create_or_update_product(product):
 
 
 ## Fetch all products grouped by parent category
-def get_product_by_categoris():
+def get_product_by_categories():
     db_session = SessionLocal()
     products = (
         db_session.query(Product.parent_category, func.array_agg(Product.description))
         .group_by(Product.parent_category)
         .all()
     )
+    db_session.close()
+    return products
+
+
+## Retrieve product by SKU
+def get_product_by_sku(sku):
+    db_session = SessionLocal()
+    product = db_session.query(Product).filter(Product.sku == sku).first()
+    db_session.close()
+    return product
+
+
+##Get product SKUs by IDs
+def get_product_skus_by_ids(product_ids):
+    product_ids = [int(id) for id in product_ids]
+    db_session = SessionLocal()
+    products = db_session.query(Product).filter(Product.id.in_(product_ids)).all()
     db_session.close()
     return products
 
