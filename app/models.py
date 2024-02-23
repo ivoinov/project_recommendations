@@ -59,6 +59,6 @@ class Order(Base):
 
 
 class ProductRecommendation:
-    def __init__(self, product_id, recommendations):
-        self.product_id = product_id
+    def __init__(self, product_sku, recommendations):
+        self.product_sku = product_sku
         self.recommendations = recommendations
