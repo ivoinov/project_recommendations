@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker, scoped_session
 from passlib.context import CryptContext
 from app.models import User, Token, Base, Product, Order
@@ -116,15 +116,19 @@ def create_or_update_product(product):
                 name=product.name,
                 description=product.description,
                 price=product.price,
+                short_description=product.short_description,
                 categories_names=product.categories_names,
+                parent_category=product.parent_category,
                 current_price=product.current_price,
             )
         else:
             # Product exists, update its values
             db_product.name = product.name
-            db_product.description = product.description
             db_product.price = product.price
+            db_product.description=product.description,
+            db_product.short_description=product.short_description,
             db_product.categories_names = product.categories_names
+            db_product.parent_category=product.parent_category,
             db_product.current_price = product.current_price
 
         db_session.add(db_product)
@@ -138,6 +142,13 @@ def create_or_update_product(product):
     finally:
         db_session.close()
 
+## Fetch all products grouped by parent category
+def get_product_by_categoris():
+    db_session = SessionLocal()
+    products = db_session.query(Product.parent_category, func.array_agg(Product.description)).\
+                            group_by(Product.parent_category).all()
+    db_session.close()
+    return products
 
 # Order related functions
 def create_or_update_order(order):
