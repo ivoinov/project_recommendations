@@ -125,10 +125,10 @@ def create_or_update_product(product):
             # Product exists, update its values
             db_product.name = product.name
             db_product.price = product.price
-            db_product.description=product.description,
-            db_product.short_description=product.short_description,
+            db_product.description = (product.description,)
+            db_product.short_description = (product.short_description,)
             db_product.categories_names = product.categories_names
-            db_product.parent_category=product.parent_category,
+            db_product.parent_category = (product.parent_category,)
             db_product.current_price = product.current_price
 
         db_session.add(db_product)
@@ -142,13 +142,18 @@ def create_or_update_product(product):
     finally:
         db_session.close()
 
+
 ## Fetch all products grouped by parent category
 def get_product_by_categoris():
     db_session = SessionLocal()
-    products = db_session.query(Product.parent_category, func.array_agg(Product.description)).\
-                            group_by(Product.parent_category).all()
+    products = (
+        db_session.query(Product.parent_category, func.array_agg(Product.description))
+        .group_by(Product.parent_category)
+        .all()
+    )
     db_session.close()
     return products
+
 
 # Order related functions
 def create_or_update_order(order):
