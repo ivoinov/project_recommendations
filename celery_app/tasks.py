@@ -2,6 +2,7 @@ from .celery_worker import celery
 from .background_tasks.products_processing import process_products_csv_file
 from .background_tasks.orders_processing import process_orders_csv_file
 from .background_tasks.train_upsell_model import train_upsell_model
+from .background_tasks.train_similar_model import train_similar_model
 
 
 # Define a task
@@ -20,6 +21,8 @@ def process_task(self, data):
             process_orders_csv_file()
         if job_name == "train_upsell_model":
             train_upsell_model()
+        if job_name == "train_similar_model":
+            train_similar_model()
     except Exception as e:
         # Retry the task
         self.retry(exc=e)
