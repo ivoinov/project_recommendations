@@ -23,6 +23,15 @@ def train_upsell_model():
     algo_svd = SVD(reg_all=0.2)
     algo_svd.fit(trainset)
     trained_svd_model = algo_svd
+    # Train the KNN model
+    sim_options = {
+        'name': 'cosine',
+        'user_based': False,
+        'k': 5  # Adjust the number of neighbors
+    }
+    algo_knn = KNNBasic(sim_options=sim_options)
+    algo_knn.fit(trainset)
+    trained_knn_model = algo_knn
     # Save the trained model to a file
     timestamp = int(time.time())
     with open(f"trained_svd_model.pkl", "wb") as f:
@@ -30,3 +39,5 @@ def train_upsell_model():
     # Save also trainset to a file
     with open(f"svd_model_trainset.pkl", "wb") as f:
         pickle.dump(trainset, f)
+    with open(f"trained_knn_model.pkl", "wb") as f:
+        pickle.dump(trained_knn_model, f)
