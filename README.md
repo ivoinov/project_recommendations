@@ -63,6 +63,25 @@ pip freeze > requirements.txt
 
 Remember to regenerate and commit the updated `requirements.txt` file to your version control system whenever you make changes to the project dependencies.
 
+Update packages to the latest versions:
+
+MacOS (make sure jq package installed ): 
+```bash
+pip list --outdated --format=json | jq -r '.[] | "\(.name)==\(.latest_version)"' | xargs -n1 pip install -U
+
+OR
+
+pip install -r requirements.txt --upgrade
+```
+
+Linux:
+```bash
+pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U 
+
+or 
+
+pip install -r requirements.txt --upgrade
+```
 ### Database Setup
 
 #### PostgreSQL on macOS (using Homebrew)
