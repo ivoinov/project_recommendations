@@ -212,3 +212,32 @@ def create_or_update_order(order):
     finally:
         db_session.close()
 
+
+def get_orders_aggregated_data_query():
+    try:
+        db_session = SessionLocal()
+        query = db_session.query(
+            Order.customer_id.label("user_id"),
+            Order.sku.label("item_id"),
+            (
+                func.sum(Order.quantity * Order.item_price) / func.sum(Order.quantity)
+            ).label("rating"),
+        ).group_by(Order.customer_id, Order.sku)
+        return query
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Error getting orders aggregated data: {e}")
+        raise
+
+
+def get_orders_aggregated_data():
+    try:
+        db_session = SessionLocal()
+        query = get_orders_aggregated_data_query()
+        data = query.all()
+        db_session.close()
+        return data
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Error getting orders aggregated data: {e}")
+        raise
