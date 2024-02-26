@@ -25,5 +25,8 @@ def train_upsell_model():
     trained_svd_model = algo_svd
     # Save the trained model to a file
     timestamp = int(time.time())
-    with open(f"trained_svd_model_{timestamp}.pkl", "wb") as f:
+    with open(f"trained_svd_model.pkl", "wb") as f:
         pickle.dump(trained_svd_model, f)
+    # Save also trainset to a file
+    with open(f"svd_model_trainset.pkl", "wb") as f:
+        pickle.dump(trainset, f)
