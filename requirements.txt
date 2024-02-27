@@ -22,7 +22,6 @@ cloudpathlib==0.16.0
 confection==0.1.4
 constantly==23.10.4
 cymem==2.0.8
-databases==0.8.0
 decorator==5.1.1
 dnspython==2.6.1
 ecdsa==0.18.0
