@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  rest_api_container:
+    container_name: rest_api_container
+    dockerfile: Dockerfile
+    build: .
+    command: uvicorn main:app --host 0.0.0.0 --port 80
+    volumes:
+      - .:/app
+    ports:
+      - "80:80"
+    depends_on:
+      - redis
+      - recommendations_db
+
+  background_worker_container:
+    container_name: background_worker_container
+    dockerfile: Dockerfile_celery
+    build: .
+    command: celery -A your_celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - recommendations_db
+
+  redis:
+    image: "redis:alpine"
+
+  recommendations_db:
+    container_name: recommendations_db
+    image: "postgres:13"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: recommendations
+      POSTGRES_USER: ivoinov
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
