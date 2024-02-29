@@ -25,9 +25,9 @@ def train_upsell_model():
     trained_svd_model = algo_svd
     # Train the KNN model
     sim_options = {
-        'name': 'cosine',
-        'user_based': False,
-        'k': 5  # Adjust the number of neighbors
+        "name": "cosine",
+        "user_based": False,
+        "k": 5,  # Adjust the number of neighbors
     }
     algo_knn = KNNBasic(sim_options=sim_options)
     algo_knn.fit(trainset)
