@@ -1,4 +1,13 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    ForeignKey,
+    DateTime,
+    Text,
+    DECIMAL,
+)
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime, timedelta
 import os
@@ -42,20 +51,20 @@ class Product(Base):
     description = Column(Text)
     price = Column(Integer)
     categories_names = Column(String(255))
-    parent_category = Column(Integer)
+    parent_category = Column(String(255))
     current_price = Column(Integer)
 
 
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
-    increment_id = Column(String(255), index=True)
-    customer_id = Column(Integer)
-    sku = Column(String(255), index=True)
+    increment_id = Column(String(255), nullable=True, index=False)
+    customer_id = Column(Integer, nullable=True, index=False)
+    sku = Column(String(255))
     quantity = Column(Integer)
     product_name = Column(String(254), index=False, nullable=False)
-    total_price = Column(Integer)
-    item_price = Column(Integer)
+    total_price = Column(DECIMAL(12, 4))
+    item_price = Column(DECIMAL(12, 4))
 
 
 class ProductRecommendation:
