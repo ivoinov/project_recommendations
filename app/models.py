@@ -53,6 +53,16 @@ class Product(Base):
     categories_names = Column(String(255))
     parent_category = Column(String(255))
     current_price = Column(Integer)
+    as_dict = lambda self: {
+        "sku": self.sku,
+        "name": self.name,
+        "short_description": self.short_description,
+        "description": self.description,
+        "price": self.price,
+        "categories_names": self.categories_names,
+        "parent_category": self.parent_category,
+        "current_price": self.current_price,
+    }
 
 
 class Order(Base):
