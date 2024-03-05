@@ -24,15 +24,6 @@ app.add_middleware(
 create_tables()
 
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 # Include routers from the routers directory
 app.include_router(auth.router)
 app.include_router(recommendations.router)
