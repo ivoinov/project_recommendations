@@ -143,14 +143,20 @@ def create_or_update_product(product):
         db_session.close()
 
 
-## Fetch all products grouped by parent category
-def get_product_by_categories():
+## Fetch products filtered by attribute
+def get_products_by_attribute(attribute, value):
     db_session = SessionLocal()
     products = (
-        db_session.query(Product.parent_category, func.array_agg(Product.description))
-        .group_by(Product.parent_category)
-        .all()
+        db_session.query(Product).filter(getattr(Product, attribute) == value).all()
     )
+    db_session.close()
+    return products
+
+
+## Fetch all products
+def get_all_products():
+    db_session = SessionLocal()
+    products = db_session.query(Product).all()
     db_session.close()
     return products
 
