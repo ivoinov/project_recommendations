@@ -2,10 +2,16 @@ from .schemas import ProductRecommendationResponse
 from app.models import ProductRecommendation, Token
 import os.path
 import pickle
+import pandas as pd
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from app.database import get_db, get_product_by_sku, get_product_skus_by_ids
+from app.database import (
+    get_db,
+    get_product_by_sku,
+    get_all_products,
+    get_products_by_attribute,
+)
 from datetime import datetime
 from sklearn.metrics.pairwise import linear_kernel
 
@@ -79,32 +85,47 @@ def similar_recommendations(
     # Verify the token
     verify_token(token, db)
     # TODO: Move load traning model from the helper to take into account if file exists.
-    if os.path.isfile("tfidf_matrices.pkl"):
+    global products, tfidf_matrices
+    products = get_all_products()
+    if os.path.isfile("product_recommender.pkl"):
         # Load saved TF-IDF matrices and vectorizers from file
-        with open("tfidf_matrices.pkl", "rb") as file:
+        with open("product_recommender.pkl", "rb") as file:
             tfidf_matrices = pickle.load(file)
             product = get_product_by_sku(product_sku)
             if product and product.parent_category in tfidf_matrices:
-                tfidf_matrix = tfidf_matrices[product.parent_category]["tfidf_matrix"]
-                tfidf_vectorizer = tfidf_matrices[product.parent_category][
-                    "tfidf_vectorizer"
-                ]
-                # Compute TF-IDF matrix for the product description
-                product_tfidf = tfidf_vectorizer.transform([product.description])
-                # Compute the cosine similarity between the product and all other products
-                cosine_similarities = linear_kernel(
-                    product_tfidf, tfidf_matrix
-                ).flatten()
-                # Get the index of the most similar products
-                similar_indices = cosine_similarities.argsort()[:-6:-1]
-                internal_ids = []
-                for index, value in enumerate(similar_indices):
-                    internal_ids.append(value)
-                # Get the SKUs of the most similar products
-                similar_product_skus = [
-                    product.sku for product in get_product_skus_by_ids(internal_ids)
-                ]
+                category_id = product.parent_category
+                index = _get_iloc(product.sku, category_id)
+
+                cosine_sim = _calculate_sim(category_id)
+                similar_product_skus = _get_recommendations(
+                    index, cosine_sim, category_id
+                )
+
                 return ProductRecommendation(
                     product_sku=product_sku, recommendations=similar_product_skus
                 )
     return ProductRecommendation(product_sku=product_sku, recommendations=[])
+
+
+def _get_iloc(product_sku, category_id):
+    products = get_products_by_attribute("parent_category", category_id)
+    df_filtered = pd.DataFrame([product.as_dict() for product in products])
+    return df_filtered[df_filtered["sku"] == product_sku].index[0]
+
+
+def _calculate_sim(category_id):
+    return linear_kernel(
+        tfidf_matrices[category_id]["tfidf_matrix"],
+        tfidf_matrices[category_id]["tfidf_matrix"],
+    )
+
+
+def _get_recommendations(product_index, cosine_sim, category_id):
+    sim_scores = list(enumerate(cosine_sim[product_index]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:21]  # Get top 20
+    sim_indices = [i[0] for i in sim_scores]
+    return [
+        get_products_by_attribute("parent_category", category_id)[i].sku
+        for i in sim_indices
+    ]
