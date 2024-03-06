@@ -2,6 +2,7 @@ from .schemas import ProductRecommendationResponse
 from app.models import ProductRecommendation, Token
 import os
 import pickle
+import numpy as np
 import pandas as pd
 from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer
@@ -9,7 +10,6 @@ from sqlalchemy.orm import Session
 from app.database import (
     get_db,
     get_product_by_sku,
-    get_all_products,
     get_products_by_attribute,
 )
 from datetime import datetime
@@ -85,7 +85,8 @@ def similar_recommendations(
 ):
     # Verify the token
     verify_token(token, db)
-    products = get_all_products()
+    text_weight = 0.7
+    price_weight = 0.2
     if settings.description_tfidf_matrices is not None:
         product = get_product_by_sku(product_sku)
         if product and product.parent_category in settings.description_tfidf_matrices:
@@ -93,7 +94,9 @@ def similar_recommendations(
             index = _get_iloc(product.sku, category_id)
 
             cosine_sim = _calculate_sim(category_id)
-            similar_product_skus = _get_recommendations(index, cosine_sim, category_id)
+            combined_similarity = (text_weight * cosine_sim +
+                       price_weight * np.outer(settings.price_vectors[category_id], settings.price_vectors[category_id]))        
+            similar_product_skus = _get_recommendations(index, combined_similarity, category_id)
 
             return ProductRecommendation(
                 product_sku=product_sku, recommendations=similar_product_skus
