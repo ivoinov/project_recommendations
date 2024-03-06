@@ -17,9 +17,12 @@ fastapi_recommendation_app/
 │   ├── recommendations.py  # Endpoints for product recommendations.
 │   ├── background.py       # Endpoints for background job processing.
 │   └── schemas.py          # Models required for routing and request/response processing.
-│
-└── data_processing/        # Scripts for data processing and machine learning model training.
-    └── train_model.py      # Script for training the recommendation model.
+│── Dockerfile              # Instructions for building the Docker image for the application.
+│── Dockerfile_celery       # Instructions for building the Docker image for the Celery worker.
+│── magento_get_product_data.sql # SQL script for fetching product data from the Magento database.
+│── magento_get_orders_stats.sql # SQL script for obtaining order statistics from the Magento database.
+│── docker-compose.yml      # Docker Compose file to orchestrate the setup of multiple containers, including the   
+|                             application, database, and any dependencies.
 ├── requirements.txt        # List of project dependencies for easy replication.
 ```
 
@@ -213,10 +216,16 @@ Usage**:
   ```
 
 ## Background Tasks
-The application includes three critical background tasks for data processing and model training:
 
- - orders_processing: This task is responsible for importing order information from a CSV file into the database. It is essential for keeping the orders data up-to-date and allows for accurate order management and analysis.
+The project utilizes Celery for managing background tasks, improving performance and user experience by offloading heavy operations:
 
- - products_processing: Similar to orders_processing, this task imports product information from a CSV file into the database. It ensures that the product catalog is current, which is vital for inventory management and recommendation accuracy.
+- **Data Synchronization**: Regular tasks that sync product and order data from Magento to our system, ensuring the recommendation engine uses up-to-date information.
+- **Model Training**: Scheduled tasks that retrain the ML models with new data, keeping the recommendations relevant and accurate.
 
- - train_upsell_model: This task uses the LightFM library to train a model for upselling recommendations. By analyzing existing order and product data, the model identifies patterns and relationships that can be used to suggest additional products to customers, enhancing the shopping experience and potentially increasing sales.
+### Using SQL Scripts:
+
+- The `magento_get_product_data.sql` and `magento_get_orders_stats.sql` scripts are executed as part of the data synchronization tasks to fetch the latest data from Magento.
+
+### Dockerization:
+
+- The application and Celery worker are containerized using Docker, simplifying deployment and scalability. The `Dockerfile` and `Dockerfile_celery` provide the necessary instructions to build the images, while `docker-compose.yml` orchestrates the containers' deployment.
