@@ -1,6 +1,6 @@
 from .schemas import ProductRecommendationResponse
 from app.models import ProductRecommendation, Token
-import os.path
+import os
 import pickle
 import pandas as pd
 from fastapi import Depends, HTTPException, status, APIRouter
@@ -14,6 +14,7 @@ from app.database import (
 )
 from datetime import datetime
 from sklearn.metrics.pairwise import linear_kernel
+from app.config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -84,26 +85,19 @@ def similar_recommendations(
 ):
     # Verify the token
     verify_token(token, db)
-    # TODO: Move load traning model from the helper to take into account if file exists.
-    global products, tfidf_matrices
     products = get_all_products()
-    if os.path.isfile("product_recommender.pkl"):
-        # Load saved TF-IDF matrices and vectorizers from file
-        with open("product_recommender.pkl", "rb") as file:
-            tfidf_matrices = pickle.load(file)
-            product = get_product_by_sku(product_sku)
-            if product and product.parent_category in tfidf_matrices:
-                category_id = product.parent_category
-                index = _get_iloc(product.sku, category_id)
+    if settings.description_tfidf_matrices is not None:
+        product = get_product_by_sku(product_sku)
+        if product and product.parent_category in settings.description_tfidf_matrices:
+            category_id = product.parent_category
+            index = _get_iloc(product.sku, category_id)
 
-                cosine_sim = _calculate_sim(category_id)
-                similar_product_skus = _get_recommendations(
-                    index, cosine_sim, category_id
-                )
+            cosine_sim = _calculate_sim(category_id)
+            similar_product_skus = _get_recommendations(index, cosine_sim, category_id)
 
-                return ProductRecommendation(
-                    product_sku=product_sku, recommendations=similar_product_skus
-                )
+            return ProductRecommendation(
+                product_sku=product_sku, recommendations=similar_product_skus
+            )
     return ProductRecommendation(product_sku=product_sku, recommendations=[])
 
 
@@ -115,8 +109,8 @@ def _get_iloc(product_sku, category_id):
 
 def _calculate_sim(category_id):
     return linear_kernel(
-        tfidf_matrices[category_id]["tfidf_matrix"],
-        tfidf_matrices[category_id]["tfidf_matrix"],
+        settings.description_tfidf_matrices[category_id]["tfidf_matrix"],
+        settings.description_tfidf_matrices[category_id]["tfidf_matrix"],
     )
 
 
