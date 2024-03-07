@@ -7,12 +7,13 @@ import pickle
 import os
 import numpy as np
 
+
 ## This is the global variable that will store the similarity matrix and product index mapping
 def train_similar_model():
     global df_total
     df_total = pd.DataFrame([product.as_dict() for product in get_all_products()])
     calculate_description_and_price_matrices()
-    #calculate_price_vector()
+    # calculate_price_vector()
     # TODO:: Implement recalculate logic. Implement entity to store version, file name and recalculate logic.
 
 
@@ -33,7 +34,7 @@ def calculate_description_and_price_matrices():
             "tfidf_matrix": tfidf_matrix,
             "tfidf_vectorizer": tfidf,
         }
-        
+
         # Price vector processing
         scaler = MinMaxScaler()
         # Handle NaN or infinite values in the price column
@@ -46,6 +47,7 @@ def calculate_description_and_price_matrices():
         pickle.dump(settings.description_tfidf_matrices, f)
     with open(settings.price_vector_file_name, "wb") as f:
         pickle.dump(settings.price_vectors, f)
+
 
 # This function calculates the price vector (general for all products) and stores it in a file
 def calculate_price_vector():

@@ -94,9 +94,12 @@ def similar_recommendations(
             index = _get_iloc(product.sku, category_id)
 
             cosine_sim = _calculate_sim(category_id)
-            combined_similarity = (text_weight * cosine_sim +
-                       price_weight * np.outer(settings.price_vectors[category_id], settings.price_vectors[category_id]))        
-            similar_product_skus = _get_recommendations(index, combined_similarity, category_id)
+            combined_similarity = text_weight * cosine_sim + price_weight * np.outer(
+                settings.price_vectors[category_id], settings.price_vectors[category_id]
+            )
+            similar_product_skus = _get_recommendations(
+                index, combined_similarity, category_id
+            )
 
             return ProductRecommendation(
                 product_sku=product_sku, recommendations=similar_product_skus
