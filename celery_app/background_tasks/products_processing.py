@@ -1,11 +1,11 @@
 import csv, os
-from config import project_root
+from app.config import settings
 from app.models import Product
 from app.database import create_or_update_product
 
 
 def process_products_csv_file():
-    file_path = os.path.join(project_root, "var", "products_data.csv")
+    file_path = os.path.join(settings.project_root, "var", "products_data.csv")
     with open(file_path, "r") as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:

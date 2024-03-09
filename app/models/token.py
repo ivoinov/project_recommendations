@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
-from app.config import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.config import settings
 from .base import Base
 
 
@@ -13,5 +13,5 @@ class Token(Base):
     user = relationship("User", back_populates="tokens")
     expires_at = Column(
         DateTime,
-        default=datetime.utcnow() + timedelta(seconds=ACCESS_TOKEN_EXPIRE_MINUTES),
+        default=datetime.utcnow() + timedelta(seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )

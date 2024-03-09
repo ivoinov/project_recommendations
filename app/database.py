@@ -2,13 +2,13 @@ from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker, scoped_session
 from passlib.context import CryptContext
 from app.models import User, Token, Product, Order
-from config import logger, DATABASE_URL
+from app.config import settings
 
 # Password context for hashing and verifying passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Setup the database engine
-engine = create_engine(DATABASE_URL)
+engine = create_engine(settings.DATABASE_URL)
 
 # Create a scoped session factory
 SessionLocal = scoped_session(

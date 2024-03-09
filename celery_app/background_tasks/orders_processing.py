@@ -1,12 +1,12 @@
 import os
 import pandas as pd
-from config import project_root
+from app.config import settings
 from app.models import Order
 from app.database import create_or_update_order
 
 
 def process_orders_csv_file():
-    file_path = os.path.join(project_root, "var", "orders_data.csv")
+    file_path = os.path.join(settings.project_root, "var", "orders_data.csv")
     orders = pd.read_csv(
         file_path,
         sep=",",
