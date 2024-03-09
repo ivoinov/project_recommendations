@@ -13,5 +13,6 @@ class Token(Base):
     user = relationship("User", back_populates="tokens")
     expires_at = Column(
         DateTime,
-        default=datetime.utcnow() + timedelta(seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+        default=datetime.utcnow()
+        + timedelta(seconds=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     )

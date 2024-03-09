@@ -4,6 +4,8 @@ from logging import Logger
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
 class Settings(BaseSettings):
     project_root: str = os.getcwd()
     logger: Logger = logging.getLogger(__name__)
