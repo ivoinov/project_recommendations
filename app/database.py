@@ -1,8 +1,7 @@
-import os
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker, scoped_session
 from passlib.context import CryptContext
-from app.models import User, Token, Base, Product, Order
+from app.models import User, Token, Product, Order
 from config import logger, DATABASE_URL
 
 # Password context for hashing and verifying passwords
@@ -15,11 +14,6 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = scoped_session(
     sessionmaker(autocommit=False, autoflush=False, bind=engine)
 )
-
-
-# Function to create tables, useful during application initialization
-def create_tables():
-    Base.metadata.create_all(bind=engine)
 
 
 # Utility function to get the database session

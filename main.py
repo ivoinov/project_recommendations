@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, recommendations, background
-from app.database import SessionLocal, create_tables
 from contextlib import asynccontextmanager
 from celery_app.background_tasks.train_similar_model import (
     load_description_matrices,
@@ -40,9 +39,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Create all tables in the database
-create_tables()
-
 # Declare the Celery app
 celery_app = celery

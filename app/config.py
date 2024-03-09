@@ -1,4 +1,6 @@
 from pydantic_settings import BaseSettings
+import os
+from dotenv import load_dotenv
 
 
 class Settings(BaseSettings):
@@ -8,5 +10,8 @@ class Settings(BaseSettings):
     price_vector_file_name: str = "price_vector.pkl"
 
 
-global settings
+global settings, ACCESS_TOKEN_EXPIRE_MINUTES
 settings = Settings()
+
+load_dotenv()
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
