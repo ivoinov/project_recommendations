@@ -4,7 +4,6 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
 from app.database import get_user_by_email, create_user_token, update_user_token
-from dotenv import load_dotenv
 from app.models import Token, User
 from app.config import settings
 
