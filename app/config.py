@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 
 load_dotenv()
 
+
 def get_defined_logger():
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
@@ -21,6 +22,7 @@ def get_defined_logger():
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     return logger
+
 
 class Settings(BaseSettings):
     project_root: str = os.getcwd()

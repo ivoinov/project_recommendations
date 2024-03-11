@@ -12,7 +12,7 @@ class ProductService:
             product = Product(**data)
             sku = data.get("sku", "")
             existing_product = self.product_repository.search_by_attribute("sku", sku)
-            if existing_product: 
+            if existing_product:
                 self.product_repository.update(product)
             else:
                 self.product_repository.create(product)

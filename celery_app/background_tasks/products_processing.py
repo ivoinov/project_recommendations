@@ -34,7 +34,7 @@ def process_products_csv_file():
                 )
                 product_repository = ProductRepository(db)
                 product_service = ProductService(product_repository)
-                product_service.create_or_update_product(product)    
+                product_service.create_or_update_product(product)
             except Exception as e:
                 print(f"Error processing row: {row}. Exception: {e}")
                 settings.logger.error(f"Error processing row: {row}. Exception: {e}")

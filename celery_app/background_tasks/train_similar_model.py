@@ -1,19 +1,25 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
-from app.config import settings
+from app.config import settings, db_settings
 import pickle
 import os
 import numpy as np
+from app.repositories import ProductRepository
 
 
 ## This is the global variable that will store the similarity matrix and product index mapping
 def train_similar_model():
-    global df_total
-    df_total = pd.DataFrame([product.as_dict() for product in get_all_products()])
+    db = next(db_settings.get_db())
+    global df_total, product_repository
+    product_repository = ProductRepository(db)
+    df_total = pd.DataFrame(
+        [product.as_dict() for product in product_repository.get_all()]
+    )
     calculate_description_and_price_matrices()
     # calculate_price_vector()
     # TODO:: Implement recalculate logic. Implement entity to store version, file name and recalculate logic.
+    db.close()
 
 
 def calculate_description_and_price_matrices():
