@@ -1,5 +1,4 @@
 import pandas as pd
-from app.database import get_all_products
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import MinMaxScaler
 from app.config import settings

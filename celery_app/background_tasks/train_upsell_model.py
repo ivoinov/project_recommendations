@@ -1,7 +1,6 @@
 import pickle
 import time
 from app.models import Order
-from app.database import get_orders_aggregated_data_query, SessionLocal
 import pandas as pd
 from surprise import Dataset, SVD, Reader, KNNBasic
 from surprise.model_selection import train_test_split

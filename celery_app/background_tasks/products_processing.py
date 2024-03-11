@@ -1,7 +1,6 @@
 import csv, os
 from app.config import settings
 from app.models import Product
-from app.database import create_or_update_product
 
 
 def process_products_csv_file():

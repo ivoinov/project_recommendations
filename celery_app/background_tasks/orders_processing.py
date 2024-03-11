@@ -2,7 +2,6 @@ import os
 import pandas as pd
 from app.config import settings
 from app.models import Order
-from app.database import create_or_update_order
 
 
 def process_orders_csv_file():
