@@ -1,4 +1,5 @@
 from app.models import Token
+from app.repositories import TokenRepository
 from datetime import timedelta
 from app.config import settings
 from datetime import datetime
@@ -6,7 +7,7 @@ from jose import jwt
 
 
 class TokenService:
-    def __init__(self, token_repository):
+    def __init__(self, token_repository: TokenRepository):
         self.token_repository = token_repository
 
     def create_access_token(self, data, expires_delta=None):

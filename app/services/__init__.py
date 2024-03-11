@@ -11,3 +11,4 @@
 # This file is executed when your project is imported as a package
 # It can be used to set up the package's environment or perform any necessary setup tasks
 from .token_service import TokenService
+from .product_service import ProductService
