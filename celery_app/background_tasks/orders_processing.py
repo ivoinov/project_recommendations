@@ -35,17 +35,23 @@ def process_orders_csv_file():
                 customer_id = (
                     int(order.customer_id) if pd.notna(order.customer_id) else 0
                 )
+                increment_id = (
+                    int(order.increment_id) if pd.notna(order.increment_id) else 0
+                )
+                customer_id = (
+                    int(order.customer_id) if pd.notna(order.customer_id) else 0
+                )
                 order_data = {}
-                order_data["increment_id"] = increment_id
-                order_data["customer_id"] = customer_id
+                order_data["increment_id"] = str(increment_id)
+                order_data["customer_id"] = int(customer_id)
                 order_data["sku"] = str(order.sku)
                 order_data["quantity"] = int(order.qty_ordered)
                 order_data["product_name"] = str(order.name)
                 order_data["total_price"] = (
-                    order.base_grand_total if pd.notna(order.base_grand_total) else 0.0
+                    0.0 if pd.isna(order.base_grand_total) else order.base_grand_total
                 )
                 order_data["item_price"] = (
-                    order.row_total if pd.notna(order.row_total) else 0.0
+                    0.0 if pd.isna(order.row_total) else order.row_total
                 )
                 data.append(order_data)
             except Exception as e:
