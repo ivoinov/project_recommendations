@@ -1,72 +1,67 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 from datetime import timedelta
-from app.database import (
-    create_user,
-    get_user_by_email,
-    get_db,
-    verify_password,
-    get_token_by_user_id,
-)
-from app.dependencies import create_access_token, update_access_token
-import os
-from dotenv import load_dotenv
 from .schemas import UserSignUp, TokenResponse
 from datetime import datetime
+from app.repositories import UserRepository, TokenRepository
+from app.services import TokenService
+from app.config import settings, db_settings
 
-load_dotenv()
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 router = APIRouter()
 
 
 @router.post("/signup", response_model=TokenResponse)
 async def create_user_signup(
-    user: UserSignUp = Body(...), db: Session = Depends(get_db)
+    user: UserSignUp = Body(...), db: Session = Depends(db_settings.get_db)
 ):
-    existing_user = await get_user_by_email(db, user.email)
+    user_repo = UserRepository(db)
+    token_repo = TokenRepository(db)
+    token_service = TokenService(token_repo)
+    existing_user = user_repo.get_user_by_email(user.email)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
-    new_user = await create_user(db, user)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = await create_access_token(
-        db,
-        data={"sub": new_user.email, "user_id": new_user.id},
+    new_user = user_repo.create(user)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = token_service.create_access_token(
+        data={"token": new_user.email, "user_id": new_user.id},
         expires_delta=access_token_expires,
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token.token, "token_type": "bearer"}
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/auth", response_model=TokenResponse)
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(db_settings.get_db),
 ):
-    user = await get_user_by_email(db, form_data.username)
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    user_repo = UserRepository(db)
+    token_repo = TokenRepository(db)
+    token_service = TokenService(token_repo)
+    user = user_repo.get_user_by_email(form_data.username)
+    if not user or not user_repo.verify_password(user, form_data.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token = await get_token_by_user_id(db, user.id)
+    access_token = token_repo.get_by_user_id(user.id)
     # If the user does not have a token, create one
     if not access_token:
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = await create_access_token(
-            db,
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        token_service.create_access_token(
             data={"sub": user.email, "user_id": user.id},
             expires_delta=access_token_expires,
         )
         return {"access_token": access_token, "token_type": "bearer"}
     # If the user has a token, check if it is expired
     if access_token.expires_at < datetime.utcnow():
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = await update_access_token(
-            db,
-            data={"sub": user.email, "user_id": user.id},
-            expires_delta=access_token_expires,
-        )
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        token_service.update_expired_token(user.id, expires_delta=access_token_expires)
         return {"access_token": access_token, "token_type": "bearer"}
     return {"access_token": access_token.token, "token_type": "bearer"}
+
+
+# TODO:: Implement me endpoint that return user info if token is valid otherwise return 401
