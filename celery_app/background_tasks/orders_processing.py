@@ -42,12 +42,10 @@ def process_orders_csv_file():
                 order_data["quantity"] = int(order.qty_ordered)
                 order_data["product_name"] = str(order.name)
                 order_data["total_price"] = (
-                    float(order.base_grand_total)
-                    if pd.notna(order.base_grand_total)
-                    else 0.0
+                    order.base_grand_total if pd.notna(order.base_grand_total) else 0.0
                 )
                 order_data["item_price"] = (
-                    float(order.row_total) if pd.notna(order.row_total) else 0.0
+                    order.row_total if pd.notna(order.row_total) else 0.0
                 )
                 data.append(order_data)
             except Exception as e:
