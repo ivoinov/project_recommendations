@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from celery_app.tasks import process_task
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 
 
 @router.post("/execute-background-task/")
