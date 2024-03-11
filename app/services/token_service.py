@@ -26,7 +26,7 @@ class TokenService:
         if not expires_delta:
             expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         token = self.token_repository.get_by_user_id(user_id)
-        token.expires_at = expires_delta
+        token.expires_at = datetime.now() + expires_delta
         self.token_repository.update(token)
         return token
 

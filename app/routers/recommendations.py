@@ -11,6 +11,10 @@ from sklearn.metrics.pairwise import linear_kernel
 from app.config import settings, db_settings
 from app.repositories import TokenRepository, ProductRepository
 from app.services import TokenService
+from celery_app.background_tasks.train_similar_model import (
+    load_description_matrices,
+    load_price_vectors,
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 
@@ -80,6 +84,10 @@ def similar_recommendations(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(db_settings.get_db),
 ):
+    if settings.description_tfidf_matrices.__len__() == 0:
+        settings.description_tfidf_matrices = load_description_matrices()
+    if settings.price_vectors.__len__() == 0:
+        settings.price_vectors = load_price_vectors()
     product_repo = ProductRepository(db)
     text_weight = 0.7
     price_weight = 0.2

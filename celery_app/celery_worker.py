@@ -1,5 +1,6 @@
 from celery import Celery
 import os
+from app.config import settings
 
 # Get broker URL from environment variables
 broker_url = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
