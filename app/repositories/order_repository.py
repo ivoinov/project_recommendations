@@ -9,25 +9,15 @@ class OrderRepository:
 
     def create(self, order):
         try:
-            db_order = (
-                self.db.query(Order)
-                .filter(Order.increment_id == order.increment_id)
-                .first()
+            db_order = Order(
+                increment_id=order.increment_id,
+                customer_id=order.customer_id,
+                sku=order.sku,
+                quantity=order.quantity,
+                product_name=order.product_name,
+                total_price=order.total_price,
+                item_price=order.item_price,
             )
-            if db_order is None:
-                db_order = Order(
-                    increment_id=order.increment_id,
-                    customer_id=order.customer_id,
-                    sku=order.sku,
-                    quantity=order.quantity,
-                    product_name=order.product_name,
-                    total_price=order.total_price,
-                    item_price=order.item_price,
-                )
-            else:
-                db_order.quantity = order.quantity
-                db_order.total_price = order.total_price
-                db_order.item_price = order.item_price
             self.db.add(db_order)
             self.db.commit()
             self.db.refresh(db_order)
@@ -41,12 +31,12 @@ class OrderRepository:
 
     def update(self, order):
         try:
-            db_order = (
-                self.db.query(Order)
-                .filter(Order.increment_id == order.increment_id)
-                .first()
-            )
+            db_order = Order()
+            db_order.increment_id = order.increment_id
+            db_order.customer_id = order.customer_id
+            db_order.sku = order.sku
             db_order.quantity = order.quantity
+            db_order.product_name = order.product_name
             db_order.total_price = order.total_price
             db_order.item_price = order.item_price
             self.db.commit()
@@ -74,3 +64,28 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error getting orders aggregated data: {e}")
             raise
+        finally:
+            self.db.close()
+
+    def get_all_increment_ids(self):
+        try:
+            increment_ids = self.db.query(Order.increment_id).all()
+            return [increment_id for increment_id, in increment_ids]
+        except Exception as e:
+            self.db.rollback()
+            settings.logger.error(f"Error getting existing increment ids: {e}")
+            raise
+        finally:
+            self.db.close()
+
+    def create_batch(self, orders):
+        try:
+            self.db.add_all(orders)
+            self.db.commit()
+            return orders
+        except Exception as e:
+            self.db.rollback()
+            settings.logger.error(f"Error creating or updating orders: {e}")
+            raise
+        finally:
+            self.db.close()

@@ -1,42 +1,57 @@
 import os
 import pandas as pd
-from app.config import settings
-from app.models import Order
+from app.config import settings, db_settings
+from app.services import OrderService
+from app.repositories import OrderRepository
 
 
 def process_orders_csv_file():
+    db = next(db_settings.get_db())
+    order_service = OrderService(OrderRepository(db))
     file_path = os.path.join(settings.project_root, "var", "orders_data.csv")
     orders = pd.read_csv(
         file_path,
         sep=",",
         dtype={
-            "increment_id": str,
-            "customer_id": int,
-            "sku": str,
-            "qty_ordered": int,
-            "name": str,
-            "base_grand_total": float,
-            "row_total": float,
+            "increment_id": pd.StringDtype(),
+            "customer_id": pd.Int64Dtype(),
+            "sku": pd.StringDtype(),
+            "qty_ordered": pd.Int64Dtype(),
+            "name": pd.StringDtype(),
+            "base_grand_total": pd.Float64Dtype(),
+            "row_total": pd.Float64Dtype(),
         },
     )
-    for order in orders.itertuples():
-        try:
-            if hasattr(order, "increment_id"):
-                increment_id = order.increment_id
-            else:
-                increment_id = ""
-            customer_id = int(order.customer_id) if pd.notna(order.customer_id) else 0
-            order = Order(
-                increment_id=str(increment_id),
-                customer_id=customer_id,
-                sku=str(order.sku),
-                quantity=int(order.qty_ordered),
-                product_name=str(order.name),
-                total_price=float(order.base_grand_total),
-                item_price=float(order.row_total),
-            )
-            create_or_update_order(order)
-        except Exception as e:
-            print(f"Error processing order: {order}")
-            print(e)
-            continue
+    batch_size = 1000
+    for i in range(0, len(orders), batch_size):
+        batch = orders[i : i + batch_size]
+        data = []
+        for order in batch.itertuples():
+            try:
+                if hasattr(order, "increment_id"):
+                    increment_id = order.increment_id
+                else:
+                    increment_id = ""
+                customer_id = (
+                    int(order.customer_id) if pd.notna(order.customer_id) else 0
+                )
+                order_data = {}
+                order_data["increment_id"] = increment_id
+                order_data["customer_id"] = customer_id
+                order_data["sku"] = str(order.sku)
+                order_data["quantity"] = int(order.qty_ordered)
+                order_data["product_name"] = str(order.name)
+                order_data["total_price"] = (
+                    float(order.base_grand_total)
+                    if pd.notna(order.base_grand_total)
+                    else 0.0
+                )
+                order_data["item_price"] = (
+                    float(order.row_total) if pd.notna(order.row_total) else 0.0
+                )
+                data.append(order_data)
+            except Exception as e:
+                print(f"Error processing order: {order}")
+                print(e)
+        order_service.create_or_update_batch(data)
+    db.close()

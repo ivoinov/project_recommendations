@@ -12,3 +12,4 @@
 # It can be used to set up the package's environment or perform any necessary setup tasks
 from .token_service import TokenService
 from .product_service import ProductService
+from .order_service import OrderService
