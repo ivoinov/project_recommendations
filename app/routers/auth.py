@@ -60,7 +60,7 @@ async def login_for_access_token(
     if access_token.expires_at < datetime.utcnow():
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         token_service.update_expired_token(user.id, expires_delta=access_token_expires)
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token.token, "token_type": "bearer"}
     return {"access_token": access_token.token, "token_type": "bearer"}
 
 
