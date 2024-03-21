@@ -1,8 +1,8 @@
 from .celery_worker import celery
-from .background_tasks.products_processing import process_products_csv_file
 from .background_tasks.orders_processing import process_orders_csv_file
-from .background_tasks.train_upsell_model import train_upsell_model
+from .background_tasks.products_processing import process_products_csv_file
 from .background_tasks.train_similar_model import train_similar_model
+from .background_tasks.train_upsell_model import train_upsell_model
 
 
 # Define a task
