@@ -5,12 +5,13 @@ import pickle
 import numpy as np
 import pandas as pd
 from fastapi import Depends, HTTPException, status, APIRouter
+from collections import defaultdict
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sklearn.metrics.pairwise import linear_kernel
 from app.config import settings, db_settings
 from app.repositories import TokenRepository, ProductRepository
-from app.services import TokenService
+from app.services import TokenService, ProductService
 from celery_app.background_tasks.train_similar_model import (
     load_description_matrices,
     load_price_vectors,
@@ -45,34 +46,19 @@ def upselling_recommendations(
     db: Session = Depends(db_settings.get_db),
 ):
     product_repo = ProductRepository(db)
-    # TODO: Implement load getting traning model from the helper file to take into account if file exists.
-    # Load the trained SVD model from a file
-    if os.path.isfile("trained_svd_model.pkl") and os.path.isfile(
-        "svd_model_trainset.pkl"
-    ):
-        with open("trained_svd_model.pkl", "rb") as file:
-            trained_svd_model = pickle.load(file)
-            trainset = pickle.load(open("svd_model_trainset.pkl", "rb"))
-            # Get the internal ID of the product
-            product = product_repo.search_by_attribute("sku", product_sku)[0]
-            if product is not None:
-                predictions = [
-                    trained_svd_model.predict(product.sku, _).est
-                    for _ in range(trainset.n_items)
-                ]
-                top_n_svd = [
-                    (trainset.to_raw_iid(inner_id), prediction)
-                    for inner_id, prediction in enumerate(predictions)
-                ]
-                top_n_svd = sorted(top_n_svd, key=lambda x: x[1], reverse=True)[:10]
-                top_n_product_ids_svd = [item_id for item_id, _ in top_n_svd]
-                return ProductRecommendation(
-                    product_sku=product_sku, recommendations=top_n_product_ids_svd
-                )
-    # Recommendation logic based on `product_similarity` and `index_to_product_id`
-    return ProductRecommendation(
-        product_sku=product_sku, recommendations=[]
-    )  # Mocked response
+    product_service = ProductService(product_repo)
+    # Load KNN model
+    if os.path.isfile("trained_knn_model.pkl"):
+        with open("trained_knn_model.pkl", "rb") as file:
+            knn_model = pickle.load(file)
+        # Generate recommendations using KNN model
+        knn_recommendations = generate_recommendations_knn(
+            knn_model, product_sku, product_service
+        )
+        return ProductRecommendation(
+            product_sku=product_sku, recommendations=knn_recommendations
+        )
+    return ProductRecommendation(product_sku=product_sku, recommendations=[])
 
 
 @router.get(
@@ -133,3 +119,15 @@ def _get_recommendations(product_index, cosine_sim, category_id, product_repo):
         product_repo.search_by_attribute("parent_category", category_id)[i].sku
         for i in sim_indices
     ]
+
+
+def generate_recommendations_knn(knn_model, product_sku, product_service):
+    query_item_id = product_service.get_product_id_by_sku(product_sku)
+    inner_item_id = knn_model.trainset.to_inner_iid(query_item_id)
+    neighbors = knn_model.get_neighbors(inner_item_id, k=10)
+    neighbor_items = [knn_model.trainset.to_raw_iid(inner_id) for inner_id in neighbors]
+    recommended_skus = [
+        product_service.get_sku_by_product_id(neighbor_id)
+        for neighbor_id in neighbor_items
+    ]
+    return recommended_skus
