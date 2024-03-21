@@ -1,6 +1,6 @@
-from app.models import Order
+from app.models import Order, Product
 from app.config import settings
-from sqlalchemy import func
+from sqlalchemy import text
 
 
 class OrderRepository:
@@ -49,24 +49,6 @@ class OrderRepository:
         finally:
             self.db.close()
 
-    def get_order_aggregated_data_query(self):
-        try:
-            query = self.db.query(
-                Order.customer_id.label("user_id"),
-                Order.sku.label("item_id"),
-                (
-                    func.sum(Order.quantity * Order.item_price)
-                    / func.sum(Order.quantity)
-                ).label("rating"),
-            ).group_by(Order.customer_id, Order.sku)
-            return query
-        except Exception as e:
-            self.db.rollback()
-            settings.logger.error(f"Error getting orders aggregated data: {e}")
-            raise
-        finally:
-            self.db.close()
-
     def get_all_increment_ids(self):
         try:
             increment_ids = self.db.query(Order.increment_id).all()
@@ -86,6 +68,25 @@ class OrderRepository:
         except Exception as e:
             self.db.rollback()
             settings.logger.error(f"Error creating or updating orders: {e}")
+            raise
+        finally:
+            self.db.close()
+
+    def fetch_all_orders(self):
+        try:
+            orders = (
+                self.db.query(
+                    Order.increment_id,
+                    (Order.sku).label("item_sku"),
+                    (Order.item_price / Order.total_price).label("rating"),
+                )
+                .filter(text("total_price != 0"))
+                .all()
+            )
+            return orders
+        except Exception as e:
+            self.db.rollback()
+            settings.logger.error(f"Error fetching all orders: {e}")
             raise
         finally:
             self.db.close()

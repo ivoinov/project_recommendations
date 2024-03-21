@@ -1,6 +1,7 @@
 from app.models import Order
 from app.repositories import OrderRepository
 from app.config import settings
+from sqlalchemy import func
 
 
 class OrderService:
@@ -32,3 +33,21 @@ class OrderService:
         except Exception as e:
             settings.logger.error(f"Error creating or updating orders: {e}")
             raise
+
+    def get_order_aggregated_data_query(self):
+        try:
+            query = self.order_repository.db.query(
+                Order.increment_id.label("increment_id"),
+                Order.sku.label("item_sku"),
+                (
+                    func.sum(Order.quantity * Order.item_price)
+                    / func.sum(Order.quantity)
+                ).label("rating"),
+            ).group_by(Order.increment_id, Order.sku)
+            return query
+        except Exception as e:
+            self.order_repository.db.rollback()
+            settings.logger.error(f"Error getting orders aggregated data: {e}")
+            raise
+        finally:
+            self.order_repository.db.close()
