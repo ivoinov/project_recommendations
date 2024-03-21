@@ -6,6 +6,8 @@ from app.config import settings
 class ProductService:
     def __init__(self, product_repository: ProductRepository):
         self.product_repository = product_repository
+        self.map_sku_to_id: dict = self.get_skus_to_ids()
+        self.map_id_to_sku: dict = {v: k for k, v in self.map_sku_to_id.items()}
 
     def create_or_update_product(self, data: dict):
         try:
@@ -19,4 +21,28 @@ class ProductService:
             return product
         except Exception as e:
             settings.logger.error(f"Error creating or updating product: {e}")
+            return None
+
+    def get_skus_to_ids(self) -> dict:
+        try:
+            map_sku_to_id = {}
+            products = self.product_repository.get_all()
+            map_sku_to_id = {product.sku: product.id for product in products}
+            return map_sku_to_id
+        except Exception as e:
+            settings.logger.error(f"Error getting skus to ids: {e}")
+            return None
+
+    def get_product_id_by_sku(self, sku: str) -> int:
+        try:
+            return round(self.map_sku_to_id.get(sku, 0), 0)
+        except Exception as e:
+            settings.logger.error(f"Error getting product id by sku: {e}")
+            return None
+
+    def get_sku_by_product_id(self, product_id: int) -> str:
+        try:
+            return self.map_id_to_sku.get(product_id, None)
+        except Exception as e:
+            settings.logger.error(f"Error getting sku by product id: {e}")
             return None
