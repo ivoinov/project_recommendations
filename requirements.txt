@@ -99,7 +99,7 @@ thinc==8.2.3
 threadpoolctl==3.3.0
 tomli==2.0.1
 tornado==6.4
-tqdm==4.66.2
+tqdm==4.66.3
 trio==0.24.0
 Twisted==23.10.0
 typer==0.9.0
