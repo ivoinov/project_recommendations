@@ -1,7 +1,7 @@
 from app.repositories import ProductRepository
 from app.models import Product
 from app.config import settings
-
+from typing import List
 
 class ProductService:
     def __init__(self, product_repository: ProductRepository):
@@ -45,4 +45,25 @@ class ProductService:
             return self.map_id_to_sku.get(product_id, None)
         except Exception as e:
             settings.logger.error(f"Error getting sku by product id: {e}")
+            return None
+    def create_or_update_products_bulk(self, products_data: List[dict]):
+        try:
+            to_update = []
+            to_create = []
+            products = []
+            for data in products_data:
+                product = Product(**data)
+                sku = data.get("sku", "")
+                product_id  = self.map_sku_to_id.get(sku, None)
+                if product_id is not None:
+                    product.id = product_id
+                    to_update.append(product)
+                else:
+                    to_create.append(product)
+                products.append(product)
+            self.product_repository.create_bulk(to_create)
+            self.product_repository.update_bulk(to_update)
+            return products
+        except Exception as e:
+            settings.logger.error(f"Error creating or updating products in bulk: {e}")
             return None

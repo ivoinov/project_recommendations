@@ -11,7 +11,7 @@ class Product(Base):
     short_description = Column(Text)
     description = Column(Text)
     price = Column(Integer)
-    categories_names = Column(String(255))
+    categories_names = Column(Text)
     parent_category = Column(String(255))
     current_price = Column(Integer)
     as_dict = lambda self: {
