@@ -101,7 +101,7 @@ tomli==2.0.1
 tornado==6.4.1
 tqdm==4.66.3
 trio==0.24.0
-Twisted==23.10.0
+Twisted==24.3.0
 typer==0.9.0
 typing_extensions==4.10.0
 tzdata==2024.1
