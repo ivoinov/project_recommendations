@@ -11,19 +11,13 @@ router = APIRouter(tags=["health"])
 @router.get("/health")
 async def health_check():
     """Basic health check - no authentication required"""
-    return {
-        "status": "healthy",
-        "service": "recommendation-api"
-    }
+    return {"status": "healthy", "service": "recommendation-api"}
 
 
 @router.get("/readiness")
 async def readiness_check(db: Session = Depends(db_settings.get_db)):
     """Readiness check - verifies dependencies"""
-    checks = {
-        "database": "unknown",
-        "redis": "unknown"
-    }
+    checks = {"database": "unknown", "redis": "unknown"}
 
     # Check database
     try:
@@ -46,7 +40,4 @@ async def readiness_check(db: Session = Depends(db_settings.get_db)):
 
     all_healthy = all(v == "healthy" for v in checks.values())
 
-    return {
-        "status": "ready" if all_healthy else "not_ready",
-        "checks": checks
-    }
+    return {"status": "ready" if all_healthy else "not_ready", "checks": checks}

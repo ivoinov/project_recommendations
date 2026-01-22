@@ -63,6 +63,7 @@ class ProductRepository:
 
     def get_all(self):
         return self.db.query(Product).all()
+
     def create_bulk(self, products):
         try:
             self.db.add_all(products)
@@ -72,19 +73,20 @@ class ProductRepository:
             self.db.rollback()
             settings.logger.exception("Error creating products in bulk")
             raise
+
     def update_bulk(self, products):
         try:
             product_mappings = [
                 {
-                    'id': product.id,
-                    'sku': product.sku,
-                    'name': product.name,
-                    'description': product.description,
-                    'price': product.price,
-                    'short_description': product.short_description,
-                    'categories_names': product.categories_names,
-                    'parent_category': product.parent_category,
-                    'current_price': product.current_price,
+                    "id": product.id,
+                    "sku": product.sku,
+                    "name": product.name,
+                    "description": product.description,
+                    "price": product.price,
+                    "short_description": product.short_description,
+                    "categories_names": product.categories_names,
+                    "parent_category": product.parent_category,
+                    "current_price": product.current_price,
                 }
                 for product in products
             ]
