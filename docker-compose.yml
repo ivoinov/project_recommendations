@@ -17,7 +17,7 @@ services:
     container_name: background_worker_container
     dockerfile: Dockerfile_celery
     build: .
-    command: celery -A your_celery_app worker --loglevel=info
+    command: celery -A celery_app.tasks worker --loglevel=info
     volumes:
       - .:/app
     depends_on:
@@ -34,8 +34,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_DB: recommendations
-      POSTGRES_USER: ivoinov
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${DB_USER:-recommendations_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
