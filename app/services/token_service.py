@@ -1,8 +1,7 @@
 from app.models import Token
 from app.repositories import TokenRepository
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from app.config import settings
-from datetime import datetime
 from jose import jwt
 
 
@@ -18,7 +17,7 @@ class TokenService:
         token.token = encoded_jwt
         if expires_delta is None or not Token.expires_at:
             expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-            Token.expires_at = datetime.utcnow() + expires_delta
+            Token.expires_at = datetime.now(timezone.utc) + expires_delta
         self.token_repository.create(token)
         return token
 
@@ -32,6 +31,6 @@ class TokenService:
 
     def verify_token(self, token):
         token = self.token_repository.get_by_token(token)
-        if not token or token.expires_at < datetime.utcnow():
+        if not token or token.expires_at < datetime.now(timezone.utc):
             return False
         return True

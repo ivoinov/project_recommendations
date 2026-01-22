@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from .schemas import UserSignUp, TokenResponse
-from datetime import datetime
 from app.repositories import UserRepository, TokenRepository
 from app.services import TokenService
 from app.config import settings, db_settings
@@ -57,7 +56,7 @@ async def login_for_access_token(
         )
         return {"access_token": access_token, "token_type": "bearer"}
     # If the user has a token, check if it is expired
-    if access_token.expires_at < datetime.utcnow():
+    if access_token.expires_at < datetime.now(timezone.utc):
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         token_service.update_expired_token(user.id, expires_delta=access_token_expires)
         return {"access_token": access_token.token, "token_type": "bearer"}

@@ -4,11 +4,13 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Request
 from collections import defaultdict
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sklearn.metrics.pairwise import linear_kernel
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from app.config import settings, db_settings
 from app.repositories import TokenRepository, ProductRepository
 from app.services import TokenService, ProductService
@@ -16,6 +18,8 @@ from celery_app.background_tasks.train_similar_model import (
     load_description_matrices,
     load_price_vectors,
 )
+
+limiter = Limiter(key_func=get_remote_address)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth")
 
@@ -40,7 +44,9 @@ router = APIRouter(dependencies=[Depends(verify_token)])
     "/upselling-recommendations/{product_sku}",
     response_model=ProductRecommendationResponse,
 )
+@limiter.limit("30/minute")
 def upselling_recommendations(
+    request: Request,
     product_sku: str,
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(db_settings.get_db),
@@ -65,7 +71,9 @@ def upselling_recommendations(
     "/similar-recommendations/{product_sku}",
     response_model=ProductRecommendationResponse,
 )
+@limiter.limit("30/minute")
 def similar_recommendations(
+    request: Request,
     product_sku: str,
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(db_settings.get_db),
