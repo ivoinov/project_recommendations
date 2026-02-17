@@ -80,27 +80,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase [N] | Pending |
-| DATA-02 | Phase [N] | Pending |
-| DATA-03 | Phase [N] | Pending |
-| REC-01 | Phase [N] | Pending |
-| REC-02 | Phase [N] | Pending |
-| REC-03 | Phase [N] | Pending |
-| SRV-01 | Phase [N] | Pending |
-| SRV-02 | Phase [N] | Pending |
-| SRV-03 | Phase [N] | Pending |
-| RULE-01 | Phase [N] | Pending |
-| ANL-01 | Phase [N] | Pending |
-| OPS-01 | Phase [N] | Pending |
-| OPS-02 | Phase [N] | Pending |
-| OPS-03 | Phase [N] | Pending |
-| OPS-04 | Phase [N] | Pending |
-| OPS-05 | Phase [N] | Pending |
+| DATA-01 | Phase 1 | Pending |
+| DATA-02 | Phase 1 | Pending |
+| DATA-03 | Phase 3 | Pending |
+| REC-01 | Phase 2 | Pending |
+| REC-02 | Phase 2 | Pending |
+| REC-03 | Phase 6 | Pending |
+| SRV-01 | Phase 2 | Pending |
+| SRV-02 | Phase 3 | Pending |
+| SRV-03 | Phase 5 | Pending |
+| RULE-01 | Phase 2 | Pending |
+| ANL-01 | Phase 2 | Pending |
+| OPS-01 | Phase 3 | Pending |
+| OPS-02 | Phase 3 | Pending |
+| OPS-03 | Phase 1 | Pending |
+| OPS-04 | Phase 4 | Pending |
+| OPS-05 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 15 total
-- Mapped to phases: 0
-- Unmapped: 15 ⚠️
+- Mapped to phases: 15
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-17*
