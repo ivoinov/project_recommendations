@@ -30,10 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Operator can import CSVs for multiple shops and see records separated by shop in the internal DB.
   3. Developer can run a repeatable local validation/test flow that confirms ingestion health.
   4. Developer can read an architecture decision document covering hosting options and vector/LLM tradeoffs.
-**Plans**: TBD
+**Plans**: 1/2 complete
 
 Plans:
-- [ ] TBD
+- [x] 01-02 - CSV spec, validation CLI, architecture decision
+- [ ] 01-03 - TBD
 
 ### Phase 2: Baseline Recommendations and API Surfaces
 **Goal**: Shoppers receive baseline PDP/cart recommendations with business rules applied and engagement logged.
@@ -105,7 +106,7 @@ Phases execute in numeric order: 2 -> 2.1 -> 2.2 -> 3 -> 3.1 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation and Dev Readiness | 0/TBD | Not started | - |
+| 1. Data Foundation and Dev Readiness | 1/2 | In progress | - |
 | 2. Baseline Recommendations and API Surfaces | 0/TBD | Not started | - |
 | 3. Reliable Batch Publishing and Candidate Store | 0/TBD | Not started | - |
 | 4. Deployment Pipeline | 0/TBD | Not started | - |
