@@ -10,6 +10,15 @@ env.bak/
 env1/
 env2/
 .env
+.env.local
+.env.production
+
+# ML model files (generated)
+*.pkl
+trained_*.pkl
+
+# Data files
+var/
 
 # IDE
 .vscode/

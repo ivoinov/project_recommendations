@@ -5,6 +5,7 @@ from logging import Logger
 from dotenv import load_dotenv
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.pool import QueuePool
 
 load_dotenv()
 
@@ -38,12 +39,27 @@ class Settings(BaseSettings):
 
 class Database(BaseSettings):
     DATABASE_URL: str = str(os.getenv("DATABASE_URL"))
+    _engine: object = None
+    _SessionLocal: object = None
+
+    def _get_engine(self):
+        if self._engine is None:
+            self._engine = create_engine(
+                self.DATABASE_URL,
+                poolclass=QueuePool,
+                pool_size=5,
+                max_overflow=10,
+                pool_pre_ping=True,
+                pool_recycle=3600,
+            )
+        return self._engine
 
     def get_db(self):
-        SessionLocal = sessionmaker(
-            autocommit=False, autoflush=False, bind=create_engine(self.DATABASE_URL)
-        )
-        db = SessionLocal()
+        if self._SessionLocal is None:
+            self._SessionLocal = sessionmaker(
+                autocommit=False, autoflush=False, bind=self._get_engine()
+            )
+        db = self._SessionLocal()
         try:
             yield db
         finally:

@@ -25,12 +25,10 @@ class UserRepository:
             self.session.commit()
             self.session.refresh(db_user)
             return db_user
-        except:
+        except Exception:
             self.session.rollback()
             settings.logger.exception("Error creating user")
             raise
-        finally:
-            self.session.close()
 
     def get_user_by_email(self, email):
         return self.session.query(User).filter(User.email == email).first()

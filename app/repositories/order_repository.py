@@ -26,8 +26,6 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error creating or updating order: {e}")
             raise
-        finally:
-            self.db.close()
 
     def update(self, order):
         try:
@@ -46,8 +44,6 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error updating order: {e}")
             raise
-        finally:
-            self.db.close()
 
     def get_all_increment_ids(self):
         try:
@@ -57,8 +53,6 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error getting existing increment ids: {e}")
             raise
-        finally:
-            self.db.close()
 
     def create_batch(self, orders):
         try:
@@ -69,8 +63,6 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error creating or updating orders: {e}")
             raise
-        finally:
-            self.db.close()
 
     def fetch_all_orders(self):
         try:
@@ -88,5 +80,3 @@ class OrderRepository:
             self.db.rollback()
             settings.logger.error(f"Error fetching all orders: {e}")
             raise
-        finally:
-            self.db.close()

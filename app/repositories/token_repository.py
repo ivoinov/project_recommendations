@@ -20,12 +20,10 @@ class TokenRepository:
             self.db.commit()
             self.db.refresh(db_token)
             return db_token
-        except:
+        except Exception:
             self.db.rollback()
             settings.logger.exception("Error creating token")
             raise
-        finally:
-            self.db.close()
 
     def update(self, token):
         try:
@@ -38,12 +36,10 @@ class TokenRepository:
             self.db.commit()
             self.db.refresh(db_token)
             return db_token
-        except:
+        except Exception:
             self.db.rollback()
             settings.logger.exception("Error updating token")
             raise
-        finally:
-            self.db.close()
 
     def get_by_user_id(self, user_id):
         return self.db.query(Token).filter(Token.user_id == user_id).first()
