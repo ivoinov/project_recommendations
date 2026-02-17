@@ -12,7 +12,7 @@ This roadmap sequences data foundation, baseline recommendations, and serving re
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Data Foundation and Dev Readiness** - Ingest validated data locally and document architecture tradeoffs.
+- [x] **Phase 1: Data Foundation and Dev Readiness** - Ingest validated data locally and document architecture tradeoffs.
 - [ ] **Phase 2: Baseline Recommendations and API Surfaces** - Serve PDP/cart recommendations with rules and engagement logging.
 - [ ] **Phase 3: Reliable Batch Publishing and Candidate Store** - Daily refreshes with versioned, cached precompute.
 - [ ] **Phase 4: Deployment Pipeline** - CI/CD deploys API and worker to initial hosting.
@@ -30,11 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Operator can import CSVs for multiple shops and see records separated by shop in the internal DB.
   3. Developer can run a repeatable local validation/test flow that confirms ingestion health.
   4. Developer can read an architecture decision document covering hosting options and vector/LLM tradeoffs.
-**Plans**: 1/2 complete
+**Plans**: 2/2 complete
 
 Plans:
 - [x] 01-02 - CSV spec, validation CLI, architecture decision
-- [ ] 01-03 - TBD
+- [x] 01-03 - Multi-shop ingestion and shop-scoped routing
 
 ### Phase 2: Baseline Recommendations and API Surfaces
 **Goal**: Shoppers receive baseline PDP/cart recommendations with business rules applied and engagement logged.
@@ -106,7 +106,7 @@ Phases execute in numeric order: 2 -> 2.1 -> 2.2 -> 3 -> 3.1 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation and Dev Readiness | 1/2 | In progress | - |
+| 1. Data Foundation and Dev Readiness | 2/2 | Complete | 2026-02-17 |
 | 2. Baseline Recommendations and API Surfaces | 0/TBD | Not started | - |
 | 3. Reliable Batch Publishing and Candidate Store | 0/TBD | Not started | - |
 | 4. Deployment Pipeline | 0/TBD | Not started | - |
