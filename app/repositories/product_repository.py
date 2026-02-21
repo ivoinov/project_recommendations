@@ -17,6 +17,8 @@ class ProductRepository:
                 categories_names=product.categories_names,
                 parent_category=product.parent_category,
                 current_price=product.current_price,
+                in_stock=product.in_stock,
+                tags=product.tags,
             )
             self.db.add(db_product)
             self.db.commit()
@@ -39,6 +41,8 @@ class ProductRepository:
             db_product.categories_names = product.categories_names
             db_product.parent_category = product.parent_category
             db_product.current_price = product.current_price
+            db_product.in_stock = product.in_stock
+            db_product.tags = product.tags
             self.db.commit()
             self.db.refresh(db_product)
             return db_product
@@ -87,6 +91,8 @@ class ProductRepository:
                     "categories_names": product.categories_names,
                     "parent_category": product.parent_category,
                     "current_price": product.current_price,
+                    "in_stock": product.in_stock,
+                    "tags": product.tags,
                 }
                 for product in products
             ]

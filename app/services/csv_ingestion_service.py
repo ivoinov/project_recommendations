@@ -69,6 +69,8 @@ def _build_product_payload(normalized_row: dict) -> dict:
         "categories_names": category,
         "parent_category": category,
         "current_price": price_value,
+        "in_stock": normalized_row.get("in_stock"),
+        "tags": normalized_row.get("tags"),
     }
 
 
