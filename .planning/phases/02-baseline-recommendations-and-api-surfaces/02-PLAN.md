@@ -4,7 +4,7 @@ plan: 02
 type: execute
 wave: 2
 depends_on:
-  - 02-01
+  - 01
 files_modified:
   - app/services/baseline_recommendation_service.py
   - app/routers/baseline_recommendations.py

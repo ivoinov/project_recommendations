@@ -4,7 +4,7 @@ plan: 03
 type: execute
 wave: 3
 depends_on:
-  - 02-01
+  - 01
 files_modified:
   - app/models/recommendation_event.py
   - app/models/__init__.py
