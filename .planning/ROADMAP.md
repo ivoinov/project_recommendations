@@ -45,12 +45,12 @@ Plans:
   2. Recommendations include co-purchase and content-based candidates derived from catalog/order data.
   3. Results apply business rules (in-stock, exclusions) and remove duplicates within a list.
   4. Engagement events (CTR/add-to-cart) are logged by placement and retrievable for analysis.
-**Plans**: 2/3 complete
+**Plans**: 3/3 complete
 
 Plans:
 - [x] 02-01 - Shop-scoped DB dependency + product metadata (in_stock/tags)
 - [x] 02-02 - Baseline PDP/cart recommendations (co-purchase + content) with rules
-- [ ] 02-03 - Engagement logging + summary retrieval endpoints
+- [x] 02-03 - Engagement logging + summary retrieval endpoints
 
 ### Phase 3: Reliable Batch Publishing and Candidate Store
 **Goal**: Recommendations refresh daily and serve from versioned, cached precomputed candidates.
@@ -109,7 +109,7 @@ Phases execute in numeric order: 2 -> 2.1 -> 2.2 -> 3 -> 3.1 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Foundation and Dev Readiness | 2/2 | Complete | 2026-02-17 |
-| 2. Baseline Recommendations and API Surfaces | 2/3 | In progress | - |
+| 2. Baseline Recommendations and API Surfaces | 3/3 | Complete | 2026-02-21 |
 | 3. Reliable Batch Publishing and Candidate Store | 0/TBD | Not started | - |
 | 4. Deployment Pipeline | 0/TBD | Not started | - |
 | 5. Latency Hardening | 0/TBD | Not started | - |
