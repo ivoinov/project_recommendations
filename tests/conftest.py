@@ -1,9 +1,10 @@
 import importlib.util
 import os
 import sys
+import uuid
 
 import pytest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 
@@ -80,12 +81,15 @@ def client(test_db):
 @pytest.fixture
 def authenticated_client(client, test_db):
     """Create a test client with an authenticated user."""
+    test_db.execute(text("SET search_path TO public"))
+    email = f"authuser-{uuid.uuid4().hex}@example.com"
+    username = f"authuser-{uuid.uuid4().hex[:8]}"
     # Create a test user
     response = client.post(
         "/signup",
         json={
-            "username": "authuser",
-            "email": "authuser@example.com",
+            "username": username,
+            "email": email,
             "password": "testpass123",
             "full_name": "Auth Test User",
         },

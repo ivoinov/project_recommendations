@@ -25,12 +25,17 @@ class TokenService:
         if not expires_delta:
             expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         token = self.token_repository.get_by_user_id(user_id)
-        token.expires_at = datetime.now() + expires_delta
+        token.expires_at = datetime.now(timezone.utc) + expires_delta
         self.token_repository.update(token)
         return token
 
     def verify_token(self, token):
         token = self.token_repository.get_by_token(token)
-        if not token or token.expires_at < datetime.now(timezone.utc):
+        if not token:
+            return False
+        expires_at = token.expires_at
+        if expires_at and expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if not expires_at or expires_at < datetime.now(timezone.utc):
             return False
         return True

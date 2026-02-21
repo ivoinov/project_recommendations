@@ -4,7 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from app.routers import auth, recommendations, background, health
+from app.routers import (
+    auth,
+    recommendations,
+    baseline_recommendations,
+    background,
+    health,
+)
 from contextlib import asynccontextmanager
 from celery_app.background_tasks.train_similar_model import (
     load_description_matrices,
@@ -37,6 +43,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # Include routers from the routers directory
 app.include_router(auth.router)
 app.include_router(recommendations.router)
+app.include_router(baseline_recommendations.router)
 app.include_router(background.router)
 app.include_router(health.router)
 
