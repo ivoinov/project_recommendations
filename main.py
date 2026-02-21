@@ -8,6 +8,7 @@ from app.routers import (
     auth,
     recommendations,
     baseline_recommendations,
+    engagement,
     background,
     health,
 )
@@ -44,6 +45,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(auth.router)
 app.include_router(recommendations.router)
 app.include_router(baseline_recommendations.router)
+app.include_router(engagement.router)
 app.include_router(background.router)
 app.include_router(health.router)
 

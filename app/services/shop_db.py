@@ -30,7 +30,7 @@ def ensure_shop_schema(db: Session, shop_id: str) -> str:
     try:
         db.execute(text(f"CREATE SCHEMA IF NOT EXISTS {schema_quoted}"))
         db.execute(text(f"SET search_path TO {schema_quoted}"))
-        Base.metadata.create_all(bind=db.get_bind())
+        Base.metadata.create_all(bind=db.connection())
         db.execute(
             text(
                 "ALTER TABLE IF EXISTS products ADD COLUMN IF NOT EXISTS in_stock BOOLEAN"
