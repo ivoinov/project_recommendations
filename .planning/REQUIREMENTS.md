@@ -15,23 +15,23 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Recommendations
 
-- [ ] **REC-01**: System generates people-also-bought recommendations from order history
-- [ ] **REC-02**: System generates content-based recommendations using category, price, and tags
+- [x] **REC-01**: System generates people-also-bought recommendations from order history
+- [x] **REC-02**: System generates content-based recommendations using category, price, and tags
 - [ ] **REC-03**: System blends co-purchase and content-based signals for ranking PDP/cart recs
 
 ### Serving & Performance
 
-- [ ] **SRV-01**: API serves recommendations for PDP and cart placements
+- [x] **SRV-01**: API serves recommendations for PDP and cart placements
 - [ ] **SRV-02**: Recommendations are served from a precomputed candidate store with caching
 - [ ] **SRV-03**: Recommendation endpoints achieve <200ms p95 response time
 
 ### Rules & Filters
 
-- [ ] **RULE-01**: Recommendations apply business rules (in-stock, exclusions, de-duplication)
+- [x] **RULE-01**: Recommendations apply business rules (in-stock, exclusions, de-duplication)
 
 ### Analytics & Measurement
 
-- [ ] **ANL-01**: System logs CTR/add-to-cart engagement by placement
+- [x] **ANL-01**: System logs CTR/add-to-cart engagement by placement
 
 ### Operations & Delivery
 
@@ -83,14 +83,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-01 | Phase 1 | Pending |
 | DATA-02 | Phase 1 | Pending |
 | DATA-03 | Phase 3 | Pending |
-| REC-01 | Phase 2 | Pending |
-| REC-02 | Phase 2 | Pending |
+| REC-01 | Phase 2 | Complete |
+| REC-02 | Phase 2 | Complete |
 | REC-03 | Phase 6 | Pending |
-| SRV-01 | Phase 2 | Pending |
+| SRV-01 | Phase 2 | Complete |
 | SRV-02 | Phase 3 | Pending |
 | SRV-03 | Phase 5 | Pending |
-| RULE-01 | Phase 2 | Pending |
-| ANL-01 | Phase 2 | Pending |
+| RULE-01 | Phase 2 | Complete |
+| ANL-01 | Phase 2 | Complete |
 | OPS-01 | Phase 3 | Pending |
 | OPS-02 | Phase 3 | Pending |
 | OPS-03 | Phase 1 | Pending |
@@ -104,4 +104,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-17*
-*Last updated: 2026-02-17 after initial definition*
+*Last updated: 2026-02-21 after Phase 2 completion*

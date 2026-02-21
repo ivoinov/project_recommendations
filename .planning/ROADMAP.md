@@ -13,7 +13,7 @@ This roadmap sequences data foundation, baseline recommendations, and serving re
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Foundation and Dev Readiness** - Ingest validated data locally and document architecture tradeoffs.
-- [ ] **Phase 2: Baseline Recommendations and API Surfaces** - Serve PDP/cart recommendations with rules and engagement logging.
+- [x] **Phase 2: Baseline Recommendations and API Surfaces** - Serve PDP/cart recommendations with rules and engagement logging.
 - [ ] **Phase 3: Reliable Batch Publishing and Candidate Store** - Daily refreshes with versioned, cached precompute.
 - [ ] **Phase 4: Deployment Pipeline** - CI/CD deploys API and worker to initial hosting.
 - [ ] **Phase 5: Latency Hardening** - Meet the <200ms p95 target for recommendation endpoints.
