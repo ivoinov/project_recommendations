@@ -65,6 +65,21 @@ class ProductRepository:
                 .all()
             )
 
+    def get_by_sku(self, sku):
+        return self.db.query(Product).filter(Product.sku == sku).first()
+
+    def get_by_skus(self, skus):
+        if not skus:
+            return []
+        return self.db.query(Product).filter(Product.sku.in_(list(skus))).all()
+
+    def get_by_parent_category(self, parent_category):
+        return (
+            self.db.query(Product)
+            .filter(Product.parent_category == parent_category)
+            .all()
+        )
+
     def get_all(self):
         return self.db.query(Product).all()
 
