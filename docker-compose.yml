@@ -2,8 +2,9 @@ version: '3.8'
 services:
   rest_api_container:
     container_name: rest_api_container
-    dockerfile: Dockerfile
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     volumes:
       - .:/app
@@ -15,8 +16,9 @@ services:
 
   background_worker_container:
     container_name: background_worker_container
-    dockerfile: Dockerfile_celery
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile_celery
     command: celery -A celery_app.tasks worker --loglevel=info
     volumes:
       - .:/app
@@ -31,7 +33,7 @@ services:
     container_name: recommendations_db
     image: "postgres:13"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: recommendations
       POSTGRES_USER: ${DB_USER:-recommendations_user}
