@@ -15,3 +15,4 @@ from .order_repository import OrderRepository
 from .product_repository import ProductRepository
 from .token_repository import TokenRepository
 from .user_repository import UserRepository
+from .recommendation_event_repository import RecommendationEventRepository

@@ -15,4 +15,5 @@ from .user import User
 from .order import Order
 from .product import Product
 from .productRecommendation import ProductRecommendation
+from .recommendation_event import RecommendationEvent
 from .base import Base
