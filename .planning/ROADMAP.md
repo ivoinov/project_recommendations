@@ -45,10 +45,12 @@ Plans:
   2. Recommendations include co-purchase and content-based candidates derived from catalog/order data.
   3. Results apply business rules (in-stock, exclusions) and remove duplicates within a list.
   4. Engagement events (CTR/add-to-cart) are logged by placement and retrievable for analysis.
-**Plans**: TBD
+**Plans**: 0/3 complete
 
 Plans:
-- [ ] TBD
+- [ ] 02-01 - Shop-scoped DB dependency + product metadata (in_stock/tags)
+- [ ] 02-02 - Baseline PDP/cart recommendations (co-purchase + content) with rules
+- [ ] 02-03 - Engagement logging + summary retrieval endpoints
 
 ### Phase 3: Reliable Batch Publishing and Candidate Store
 **Goal**: Recommendations refresh daily and serve from versioned, cached precomputed candidates.
