@@ -1,4 +1,5 @@
 from celery import Celery
+from celery.schedules import crontab
 import os
 from app.config import settings
 
@@ -9,5 +10,13 @@ celery = Celery("celery_worker", broker=broker_url)
 celery.conf.update(
     broker_connection_retry=True,
     broker_connection_retry_on_startup=True,
+    enable_utc=True,
+    timezone="UTC",
+    beat_schedule={
+        "publish-recommendations-daily": {
+            "task": "celery_app.tasks.publish_recommendations",
+            "schedule": crontab(hour=2, minute=0),
+        }
+    },
 )
 celery.autodiscover_tasks(["celery_app.tasks"], force=True)

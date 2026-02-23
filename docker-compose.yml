@@ -26,6 +26,18 @@ services:
       - redis
       - recommendations_db
 
+  celery_beat:
+    container_name: celery_beat_container
+    build:
+      context: .
+      dockerfile: Dockerfile_celery
+    command: celery -A celery_app.tasks beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - recommendations_db
+
   redis:
     image: "redis:alpine"
 

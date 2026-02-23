@@ -10,7 +10,13 @@
 
 # This file is executed when your project is imported as a package
 # It can be used to set up the package's environment or perform any necessary setup tasks
-from .products_processing import process_products_csv_file
-from .orders_processing import process_orders_csv_file
-from .train_upsell_model import train_upsell_model
-from .train_similar_model import train_similar_model
+try:
+    from .products_processing import process_products_csv_file
+    from .orders_processing import process_orders_csv_file
+    from .train_upsell_model import train_upsell_model
+    from .train_similar_model import train_similar_model
+except Exception:
+    process_products_csv_file = None
+    process_orders_csv_file = None
+    train_upsell_model = None
+    train_similar_model = None
