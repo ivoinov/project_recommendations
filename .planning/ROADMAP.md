@@ -60,12 +60,12 @@ Plans:
   1. Daily batch refresh completes on schedule and reports a successful run status.
   2. API serves recommendations from a precomputed candidate store with caching enabled.
   3. Recommendation publishes are versioned with atomic promote and rollback available.
-**Plans**: 2/3
+**Plans**: 3/3
 
 Plans:
 - [x] 03-01-PLAN.md — Candidate store models, repositories, and cache utilities
 - [x] 03-02-PLAN.md — Versioned publish service with daily batch scheduling
-- [ ] 03-03-PLAN.md — Precomputed serving plus publish status/rollback APIs
+- [x] 03-03-PLAN.md — Precomputed serving plus publish status/rollback APIs
 
 ### Phase 4: Deployment Pipeline
 **Goal**: API and worker deploy through CI/CD to the initial hosting environment.
@@ -112,7 +112,7 @@ Phases execute in numeric order: 2 -> 2.1 -> 2.2 -> 3 -> 3.1 -> 4
 |-------|----------------|--------|-----------|
 | 1. Data Foundation and Dev Readiness | 2/2 | Complete | 2026-02-17 |
 | 2. Baseline Recommendations and API Surfaces | 3/3 | Complete | 2026-02-21 |
-| 3. Reliable Batch Publishing and Candidate Store | 2/3 | In progress | - |
+| 3. Reliable Batch Publishing and Candidate Store | 3/3 | Complete | 2026-02-23 |
 | 4. Deployment Pipeline | 0/TBD | Not started | - |
 | 5. Latency Hardening | 0/TBD | Not started | - |
 | 6. Hybrid Ranking Blend | 0/TBD | Not started | - |
