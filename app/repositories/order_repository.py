@@ -1,6 +1,6 @@
 from app.models import Order, Product
 from app.config import settings
-from sqlalchemy import text, bindparam
+from sqlalchemy import text, bindparam, func
 
 
 class OrderRepository:
@@ -106,4 +106,29 @@ class OrderRepository:
         except Exception as e:
             self.db.rollback()
             settings.logger.error(f"Error fetching co-purchase counts: {e}")
+            raise
+
+    def count_orders(self):
+        try:
+            count = self.db.query(func.count(Order.id)).scalar()
+            return int(count or 0)
+        except Exception as e:
+            self.db.rollback()
+            settings.logger.error(f"Error counting orders: {e}")
+            raise
+
+    def get_sku_popularity(self, skus):
+        if not skus:
+            return {}
+        try:
+            rows = (
+                self.db.query(Order.sku, func.count(Order.id))
+                .filter(Order.sku.in_(list(set(skus))))
+                .group_by(Order.sku)
+                .all()
+            )
+            return {sku: int(count or 0) for sku, count in rows}
+        except Exception as e:
+            self.db.rollback()
+            settings.logger.error(f"Error fetching sku popularity: {e}")
             raise

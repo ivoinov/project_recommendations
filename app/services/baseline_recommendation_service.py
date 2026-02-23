@@ -67,6 +67,13 @@ def build_co_purchase_candidates(order_repository, seed_skus, limit=50):
 
 
 def build_content_based_candidates(product_repository, seed_skus, limit=50):
+    scored = build_content_based_scored_candidates(
+        product_repository, seed_skus, limit=limit
+    )
+    return [sku for sku, _tag_overlap, _price_diff in scored]
+
+
+def build_content_based_scored_candidates(product_repository, seed_skus, limit=50):
     if not seed_skus:
         return []
 
@@ -124,7 +131,9 @@ def build_content_based_candidates(product_repository, seed_skus, limit=50):
         scored.append((product.sku, tag_overlap, price_diff))
 
     scored.sort(key=lambda item: (-item[1], item[2], item[0]))
-    return [sku for sku, _tag_overlap, _price_diff in scored[:limit]]
+    if limit:
+        scored = scored[:limit]
+    return scored
 
 
 def merge_candidates(
@@ -143,6 +152,51 @@ def merge_candidates(
         product_repository,
         limit=limit,
     )
+
+
+def merge_raw_candidates(co_purchase, content_based, seed_skus, limit=None):
+    combined = list(co_purchase) + list(content_based)
+    exclude_set = set(seed_skus or [])
+    seen = set()
+    merged = []
+    for sku in combined:
+        if not sku or sku in exclude_set or sku in seen:
+            continue
+        seen.add(sku)
+        merged.append(sku)
+        if limit and len(merged) >= limit:
+            break
+    return merged
+
+
+def build_precompute_candidates(
+    seed_skus,
+    order_repository,
+    product_repository,
+    limit=50,
+):
+    try:
+        seed_skus = [sku for sku in (seed_skus or []) if sku]
+        co_purchase_rows = order_repository.get_co_purchase_counts(
+            seed_skus, limit=limit
+        )
+        co_purchase = [sku for sku, _count in co_purchase_rows]
+        content_scored = build_content_based_scored_candidates(
+            product_repository, seed_skus, limit=limit
+        )
+        content_based = [sku for sku, _tag_overlap, _price_diff in content_scored]
+        merged = merge_raw_candidates(
+            co_purchase, content_based, seed_skus, limit=limit
+        )
+        return {
+            "seed_skus": seed_skus,
+            "co_purchase": co_purchase,
+            "content_based": content_based,
+            "merged": merged,
+        }
+    except Exception as e:
+        settings.logger.error(f"Error building precompute candidates: {e}")
+        raise
 
 
 def filter_candidates(

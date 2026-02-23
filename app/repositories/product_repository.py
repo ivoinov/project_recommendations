@@ -1,5 +1,6 @@
 from app.models import Product
 from app.config import settings
+from sqlalchemy import func
 
 
 class ProductRepository:
@@ -117,4 +118,22 @@ class ProductRepository:
         except Exception:
             self.db.rollback()
             settings.logger.exception("Error updating products in bulk")
+            raise
+
+    def count_products(self):
+        try:
+            count = self.db.query(func.count(Product.id)).scalar()
+            return int(count or 0)
+        except Exception:
+            self.db.rollback()
+            settings.logger.exception("Error counting products")
+            raise
+
+    def list_all_skus(self):
+        try:
+            rows = self.db.query(Product.sku).all()
+            return [sku for (sku,) in rows if sku]
+        except Exception:
+            self.db.rollback()
+            settings.logger.exception("Error listing product skus")
             raise

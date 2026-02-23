@@ -50,3 +50,27 @@ def ensure_shop_schema(db: Session, shop_id: str) -> str:
 def get_shop_db(shop_id: str, db: Session = Depends(db_settings.get_db)) -> Session:
     ensure_shop_schema(db, shop_id)
     return db
+
+
+def list_shop_ids(db: Session) -> list[str]:
+    try:
+        rows = db.execute(
+            text(
+                "SELECT schema_name FROM information_schema.schemata "
+                "WHERE schema_name LIKE 'shop\\_%'"
+            )
+        ).fetchall()
+        shop_ids = []
+        for (schema_name,) in rows:
+            if not schema_name or not schema_name.startswith("shop_"):
+                continue
+            shop_id = schema_name[len("shop_") :]
+            try:
+                shop_ids.append(normalize_shop_id(shop_id))
+            except ValueError:
+                continue
+        return sorted(set(shop_ids))
+    except Exception:
+        db.rollback()
+        settings.logger.exception("Error listing shop schemas")
+        raise
