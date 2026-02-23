@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   rest_api_container:
     container_name: rest_api_container
