@@ -16,3 +16,5 @@ from .product_repository import ProductRepository
 from .token_repository import TokenRepository
 from .user_repository import UserRepository
 from .recommendation_event_repository import RecommendationEventRepository
+from .recommendation_candidate_repository import RecommendationCandidateRepository
+from .recommendation_publish_repository import RecommendationPublishRepository
