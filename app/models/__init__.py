@@ -16,4 +16,7 @@ from .order import Order
 from .product import Product
 from .productRecommendation import ProductRecommendation
 from .recommendation_event import RecommendationEvent
+from .recommendation_candidate import RecommendationCandidate
+from .recommendation_publish_state import RecommendationPublishState
+from .recommendation_publish_run import RecommendationPublishRun
 from .base import Base
