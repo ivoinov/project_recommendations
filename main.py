@@ -9,6 +9,7 @@ from app.routers import (
     recommendations,
     baseline_recommendations,
     engagement,
+    publish_status,
     background,
     health,
 )
@@ -46,6 +47,7 @@ app.include_router(auth.router)
 app.include_router(recommendations.router)
 app.include_router(baseline_recommendations.router)
 app.include_router(engagement.router)
+app.include_router(publish_status.router)
 app.include_router(background.router)
 app.include_router(health.router)
 
