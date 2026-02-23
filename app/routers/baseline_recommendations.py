@@ -3,9 +3,12 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from app.config import db_settings
-from app.repositories import TokenRepository, ProductRepository, OrderRepository
+from app.repositories import TokenRepository, ProductRepository
 from app.services import TokenService
-from app.services.baseline_recommendation_service import build_recommendations
+from app.services.precomputed_recommendation_service import (
+    get_cart_recommendations,
+    get_pdp_recommendations,
+)
 from app.services.shop_db import get_shop_db
 from app.routers.baseline_schemas import (
     CartRecommendationRequest,
@@ -41,13 +44,11 @@ def pdp_recommendations(
     db: Session = Depends(get_shop_db),
 ):
     product_repo = ProductRepository(db)
-    order_repo = OrderRepository(db)
-    result = build_recommendations(
-        seed_skus=[product_sku],
-        order_repository=order_repo,
+    result = get_pdp_recommendations(
+        shop_id=shop_id,
+        seed_sku=product_sku,
+        db=db,
         product_repository=product_repo,
-        exclude_skus=[],
-        limit=20,
     )
     return BaselineRecommendationResponse(
         placement="pdp",
@@ -65,10 +66,10 @@ def cart_recommendations(
     db: Session = Depends(get_shop_db),
 ):
     product_repo = ProductRepository(db)
-    order_repo = OrderRepository(db)
-    result = build_recommendations(
+    result = get_cart_recommendations(
+        shop_id=shop_id,
         seed_skus=payload.cart_skus,
-        order_repository=order_repo,
+        db=db,
         product_repository=product_repo,
         exclude_skus=payload.exclude_skus,
         limit=payload.limit,
