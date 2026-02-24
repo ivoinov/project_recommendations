@@ -89,7 +89,7 @@ jobs:
 
     - name: Install linters
       run: |
-        pip install flake8 black
+        pip install -r requirements.txt
 
     - name: Run flake8
       run: |
