@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -94,6 +98,40 @@ jobs:
     - name: Check black formatting
       run: |
         black --check app/ --line-length 88
+
+  deploy:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    concurrency:
+      group: deploy-main
+      cancel-in-progress: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v6
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ vars.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Deploy to App Runner
+      env:
+        AWS_REGION: ${{ vars.AWS_REGION }}
+        ECR_API_REPOSITORY: ${{ vars.ECR_API_REPOSITORY }}
+        ECR_WORKER_REPOSITORY: ${{ vars.ECR_WORKER_REPOSITORY }}
+        APP_RUNNER_API_SERVICE_ARN: ${{ vars.APP_RUNNER_API_SERVICE_ARN }}
+        APP_RUNNER_WORKER_SERVICE_ARN: ${{ vars.APP_RUNNER_WORKER_SERVICE_ARN }}
+        API_HEALTH_URL: ${{ vars.API_HEALTH_URL }}
+        WORKER_HEALTH_URL: ${{ vars.WORKER_HEALTH_URL }}
+      run: |
+        scripts/deploy/apprunner_deploy.sh
+        scripts/deploy/apprunner_verify.sh
 
   build:
     needs: [test, lint]
