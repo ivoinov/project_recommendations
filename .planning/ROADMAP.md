@@ -74,10 +74,10 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. CI/CD deploys the API and worker to the initial hosting environment without manual steps.
   2. Operator can verify the deployed API and worker are running via health/status checks.
-**Plans**: 2 plans
+**Plans**: 1/2 complete
 
 Plans:
-- [ ] 04-01-PLAN.md — Worker health endpoint and container entrypoint
+- [x] 04-01-PLAN.md — Worker health endpoint and container entrypoint
 - [ ] 04-02-PLAN.md — CI/CD deploy automation with verification and rollback
 
 ### Phase 5: Latency Hardening
@@ -114,6 +114,6 @@ Phases execute in numeric order: 2 -> 2.1 -> 2.2 -> 3 -> 3.1 -> 4
 | 1. Data Foundation and Dev Readiness | 2/2 | Complete | 2026-02-17 |
 | 2. Baseline Recommendations and API Surfaces | 3/3 | Complete | 2026-02-21 |
 | 3. Reliable Batch Publishing and Candidate Store | 3/3 | Complete | 2026-02-23 |
-| 4. Deployment Pipeline | 0/2 | Not started | - |
+| 4. Deployment Pipeline | 1/2 | In progress | 2026-02-24 |
 | 5. Latency Hardening | 0/TBD | Not started | - |
 | 6. Hybrid Ranking Blend | 0/TBD | Not started | - |
